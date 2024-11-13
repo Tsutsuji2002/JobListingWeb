@@ -1,0 +1,159 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\React\\JobListingWeb\\JobListingWebAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\entities\\joblisting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:entities\\joblisting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\entities\\company.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:entities\\company.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\models\\jobmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:models\\jobmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\repositories\\joblistingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:repositories\\joblistingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\controllers\\jobcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:controllers\\jobcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\models\\companymodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:models\\companymodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\controllers\\companycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:controllers\\companycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingwebapi\\controllers\\imagecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:controllers\\imagecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Company.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Entities\\Company.cs",
+              "RelativeDocumentMoniker": "Entities\\Company.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Entities\\Company.cs",
+              "RelativeToolTip": "Entities\\Company.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-13T05:17:00.962Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "JobListingRepository.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Repositories\\JobListingRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\JobListingRepository.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Repositories\\JobListingRepository.cs",
+              "RelativeToolTip": "Repositories\\JobListingRepository.cs",
+              "ViewState": "AQIAAC4AAAAAAAAAAAAYwD4AAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-13T04:58:18.429Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "JobModel.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Models\\JobModel.cs",
+              "RelativeDocumentMoniker": "Models\\JobModel.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Models\\JobModel.cs",
+              "RelativeToolTip": "Models\\JobModel.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAA0wBIAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-13T04:49:03.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "JobListing.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Entities\\JobListing.cs",
+              "RelativeDocumentMoniker": "Entities\\JobListing.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Entities\\JobListing.cs",
+              "RelativeToolTip": "Entities\\JobListing.cs",
+              "ViewState": "AQIAACQAAAAAAAAAAAAYwDEAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-13T04:48:15.036Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "JobController.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\JobController.cs",
+              "RelativeDocumentMoniker": "Controllers\\JobController.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\JobController.cs",
+              "RelativeToolTip": "Controllers\\JobController.cs",
+              "ViewState": "AQIAABgAAAAAAAAAAAAowCcAAABSAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-13T04:46:28.42Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ImageController.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\ImageController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ImageController.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\ImageController.cs",
+              "RelativeToolTip": "Controllers\\ImageController.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAAgwC4AAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T14:50:54.791Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CompanyModel.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Models\\CompanyModel.cs",
+              "RelativeDocumentMoniker": "Models\\CompanyModel.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Models\\CompanyModel.cs",
+              "RelativeToolTip": "Models\\CompanyModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T10:09:57.968Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CompanyController.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\CompanyController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CompanyController.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWebAPI\\Controllers\\CompanyController.cs",
+              "RelativeToolTip": "Controllers\\CompanyController.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAAgwDYAAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-08T09:43:33.399Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
