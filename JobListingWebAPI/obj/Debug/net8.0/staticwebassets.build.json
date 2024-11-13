@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "p9yfEwXOBNphnHjFPk3jQOpRXcKZZaVQK1y1ewvn2hs=",
+  "Source": "JobListingWebAPI",
+  "BasePath": "_content/JobListingWebAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

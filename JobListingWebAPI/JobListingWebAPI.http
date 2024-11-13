@@ -1,0 +1,6 @@
+@JobListingWebAPI_HostAddress = http://localhost:5070
+
+GET {{JobListingWebAPI_HostAddress}}/api/Company/
+Accept: application/json
+
+###
