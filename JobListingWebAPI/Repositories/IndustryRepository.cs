@@ -14,6 +14,10 @@ namespace JobListingWebAPI.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// Lấy toàn bộ ngành
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Industry>> GetAllIndustriesAsync()
         {
             return await _context.Industries
@@ -22,6 +26,23 @@ namespace JobListingWebAPI.Repositories
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// Lấy toàn bộ ngành kể cả đã xóa
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Industry>> Admin_GetAllIndustriesAsync()
+        {
+            return await _context.Industries
+                .Include(i => i.MappingIndustries)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Lấy ngành theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<Industry> GetIndustryByIdAsync(int id)
         {
             var industry = await _context.Industries
@@ -37,6 +58,11 @@ namespace JobListingWebAPI.Repositories
             return industry;
         }
 
+        /// <summary>
+        /// Thêm ngành mới
+        /// </summary>
+        /// <param name="industryModel"></param>
+        /// <returns></returns>
         public async Task<IndustryModel> AddIndustryAsync(IndustryModel industryModel)
         {
             var industry = new Industry
@@ -55,6 +81,13 @@ namespace JobListingWebAPI.Repositories
             };
         }
 
+        /// <summary>
+        /// Cập nhật ngành
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="industryModel"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<IndustryModel> UpdateIndustryAsync(int id, IndustryModel industryModel)
         {
             var industry = await _context.Industries.FindAsync(id);
@@ -76,6 +109,27 @@ namespace JobListingWebAPI.Repositories
             };
         }
 
+        /// <summary>
+        /// Khôi phục ngành đã xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> RestoreIndustryAsync(int id)
+        {
+            var industry = await _context.Industries.FindAsync(id);
+            if (industry == null)
+                return false;
+
+            industry.IsDeleted = false;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Xóa ngành tạm thời
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteIndustryAsync(int id)
         {
             var industry = await _context.Industries.FindAsync(id);
@@ -87,11 +141,53 @@ namespace JobListingWebAPI.Repositories
             return true;
         }
 
+        /// <summary>
+        /// Xóa ngành vĩnh viễn
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteIndustryPermanentlyAsync(int id)
+        {
+            var industry = await _context.Industries
+                .Include(l => l.MappingIndustries)
+                .FirstOrDefaultAsync(l => l.IndustryID == id);
+
+            if (industry == null)
+                return false;
+
+            _context.MappingIndustries.RemoveRange(industry.MappingIndustries);
+
+            _context.Industries.Remove(industry);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Kiểm tra ngành có tồn tại
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<bool> IndustryExistsAsync(int id)
         {
             return await _context.Industries.AnyAsync(i => i.IndustryID == id && !i.IsDeleted);
         }
 
+        /// <summary>
+        /// Kiểm tra ngành đã xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> IndustryDeletedAsync(int id)
+        {
+            return await _context.Industries.AnyAsync(i => i.IndustryID == id && i.IsDeleted);
+        }
+
+        /// <summary>
+        /// Tìm kiếm ngành
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Industry>> SearchIndustriesAsync(string searchTerm)
         {
             return await _context.Industries

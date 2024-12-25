@@ -31,12 +31,16 @@ namespace JobListingWebAPI.Entities
     public class AdminUser : ApplicationUser
     {
         public string? AdminLevel { get; set; }
+
     }
 
     // Applicant specific properties
     public class ApplicantUser : ApplicationUser
     {
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<FavoriteJob> FavoriteJobs { get; set; }
+        public bool ReceiveDailyJobMatches { get; set; } = true;
+
     }
 
     // Employer specific properties

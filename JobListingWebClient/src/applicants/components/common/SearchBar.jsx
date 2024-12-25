@@ -6,7 +6,7 @@ const SearchBar = ({ onSearch }) => {
     <div className="flex items-center space-x-2">
       <input
         type="text"
-        placeholder="Tìm kiếm việc làm..."
+        placeholder="Tìm kiếm công ty..."
         className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         onChange={(e) => onSearch(e.target.value)}
       />

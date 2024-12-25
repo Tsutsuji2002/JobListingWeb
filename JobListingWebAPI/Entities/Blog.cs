@@ -19,6 +19,7 @@ namespace JobListingWebAPI.Entities
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<MappingType> MappingTypes { get; set; }
+        public ICollection<BlogTag> BlogTags { get; set; }
 
         [ForeignKey("User")]
         public string? UserId { get; set; }

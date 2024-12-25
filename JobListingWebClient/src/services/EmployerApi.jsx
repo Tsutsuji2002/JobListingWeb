@@ -29,11 +29,9 @@ export const employerApi = {
   logout: async () => {
     try {
       const response = await api.post('/Account/logout');
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'Có lỗi xảy ra khi đăng xuất' };
+      throw error;
     }
   },
 

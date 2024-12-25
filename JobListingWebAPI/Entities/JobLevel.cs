@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace JobListingWebAPI.Entities
 {
@@ -9,7 +10,10 @@ namespace JobListingWebAPI.Entities
         [Required, StringLength(100)]
         public string? Description { get; set; }
         public bool IsDeleted { get; set; } = false;
+        [JsonIgnore]
         public ICollection<JobListing> JobListings { get; set; }
+        public ICollection<Subscriber> Subscribers { get; set; } = new List<Subscriber>();
+
 
     }
 }

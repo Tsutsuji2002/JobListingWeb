@@ -10,6 +10,15 @@ export const industryApi = {
     }
   },
 
+  admin_getAllIndustries: async () => {
+    try {
+      const response = await api.get('/Industry/admin');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || 'Không thể tải danh sách ngành nghề';
+    }
+  },
+
   getIndustryById: async (id) => {
     try {
       const response = await api.get(`/Industry/${id}`);
@@ -37,9 +46,27 @@ export const industryApi = {
     }
   },
 
+  restoreIndustry: async (id) => {
+    try {
+      await api.put(`/Industry/restore/${id}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data || 'Không thể khôi phục ngành nghề';
+    }
+  },
+
   deleteIndustry: async (id) => {
     try {
       await api.delete(`/Industry/${id}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data || 'Không thể xóa ngành nghề';
+    }
+  },
+
+  deleteIndustryPermanently: async (id) => {
+    try {
+      await api.delete(`/Industry/permanent/${id}`);
       return true;
     } catch (error) {
       throw error.response?.data || 'Không thể xóa ngành nghề';

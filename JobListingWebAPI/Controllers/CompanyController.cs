@@ -26,6 +26,10 @@ namespace JobListingWebAPI.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Lấy toàn bộ công ty
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetAllCompanies()
         {
@@ -33,6 +37,22 @@ namespace JobListingWebAPI.Controllers
             return Ok(companies);
         }
 
+        /// <summary>
+        /// Lấy toàn bộ công ty kể cả đã xóa
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<Company>>> Admin_GetAllCompanies()
+        {
+            var companies = await _companyRepository.Admin_GetAllCompaniesAsync();
+            return Ok(companies);
+        }
+
+        /// <summary>
+        /// Lấy công ty theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompanyById(int id)
         {
@@ -44,6 +64,11 @@ namespace JobListingWebAPI.Controllers
             return Ok(company);
         }
 
+        /// <summary>
+        /// Lấy công ty theo employer(theo userId)
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<Company>> GetCompanyByUserId(string userId)
         {
@@ -55,6 +80,11 @@ namespace JobListingWebAPI.Controllers
             return Ok(company);
         }
 
+        /// <summary>
+        /// Thêm công ty mới
+        /// </summary>
+        /// <param name="companyModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Company>> AddCompany([FromForm] CompanyModel companyModel)
         {
@@ -64,11 +94,13 @@ namespace JobListingWebAPI.Controllers
                 {
                     Name = companyModel.Name,
                     Description = companyModel.Description,
+                    Benefits = companyModel.Benefits,
                     FoundedYear = companyModel.FoundedYear,
                     Website = companyModel.Website,
                     CreatedDate = DateTime.UtcNow,
                     UpdatedDate = DateTime.UtcNow,
                     IsDeleted = false,
+                    IsFeature = false,
                     UserId = companyModel.UserId
                 };
 
@@ -96,6 +128,13 @@ namespace JobListingWebAPI.Controllers
                 return BadRequest($"Failed to create company: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Thêm địa điểm mới cho công ty
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{companyId}/locations")]
         public async Task<ActionResult> AddCompanyLocations(int companyId, [FromBody] MappingLocationRequest request)
         {
@@ -127,6 +166,12 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Thêm ngành mới cho công ty
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("{companyId}/industries")]
         public async Task<ActionResult> AddCompanyIndustries(int companyId, [FromBody] MappingIndustryRequest request)
         {
@@ -157,6 +202,12 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Hàm lưu ảnh
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         private async Task<string> SaveImage(IFormFile file, string folder)
         {
             // Create folder if it doesn't exist
@@ -177,6 +228,12 @@ namespace JobListingWebAPI.Controllers
             return $"/{folder}/{fileName}";
         }
 
+        /// <summary>
+        /// Cập nhật thông tin công ty
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateCompany(int id, [FromForm] CompanyModel model)
         {
@@ -191,8 +248,10 @@ namespace JobListingWebAPI.Controllers
                 // Update basic information
                 existingCompany.Name = model.Name;
                 existingCompany.Description = model.Description;
+                existingCompany.Benefits = model.Benefits;
                 existingCompany.FoundedYear = model.FoundedYear;
                 existingCompany.Website = model.Website;
+                existingCompany.IsFeature = model.IsFeature ?? existingCompany.IsFeature;
                 existingCompany.UpdatedDate = DateTime.UtcNow;
                 existingCompany.UserId = existingCompany.UserId;
 
@@ -238,6 +297,31 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Khôi phục công ty đã xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("restore/{id}")]
+        public async Task<ActionResult> RestoreCompany(int id)
+        {
+            var success = await _companyRepository.RestoreCompanyAsync(id);
+            if (!success)
+            {
+                return NotFound($"Không tìm thấy công ty có ID {id}.");
+            }
+            return Ok(new
+            {
+                message = $"Đã khôi phục công ty có ID {id} thành công.",
+                companyId = id
+            });
+        }
+
+        /// <summary>
+        /// Xóa công ty tạm thời
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCompany(int id)
         {
@@ -246,16 +330,38 @@ namespace JobListingWebAPI.Controllers
             {
                 return NotFound($"Không tìm thấy công ty có ID {id}.");
             }
-            return NoContent();
+            return Ok(new
+            {
+                message = $"Đã xóa công ty có ID {id} thành công.",
+                companyId = id
+            });
         }
 
-        [HttpGet("exists/{id}")]
-        public async Task<ActionResult<bool>> CompanyExists(int id)
+        /// <summary>
+        /// Xóa công ty vĩnh viễn
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("permanent/{id}")]
+        public async Task<ActionResult> PermanentDeleteCompany(int id)
         {
-            var exists = await _companyRepository.CompanyExistsAsync(id);
-            return Ok(exists);
+            var success = await _companyRepository.PermanentDeleteCompanyAsync(id);
+            if (!success)
+            {
+                return NotFound($"Không tìm thấy công ty có ID {id}.");
+            }
+            return Ok(new
+            {
+                message = $"Đã xóa vĩnh viễn công ty có ID {id} thành công.",
+                companyId = id
+            });
         }
 
+        /// <summary>
+        /// Lọc công ty theo ngành
+        /// </summary>
+        /// <param name="industryId"></param>
+        /// <returns></returns>
         [HttpGet("industry/{industryId}")]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompaniesByIndustry(int industryId)
         {
@@ -263,18 +369,59 @@ namespace JobListingWebAPI.Controllers
             return Ok(companies);
         }
 
+        /// <summary>
+        /// Lọc công ty theo địa điểm
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <returns></returns>
         [HttpGet("location/{locationId}")]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompaniesByLocation(int locationId)
         {
             var companies = await _companyRepository.GetCompaniesByLocationAsync(locationId);
             return Ok(companies);
-        }
+        }   
 
+        /// <summary>
+        /// Tìm kiếm công ty(theo tên và mô tả)
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Company>>> SearchCompanies(string searchTerm)
         {
             var companies = await _companyRepository.SearchCompaniesAsync(searchTerm);
             return Ok(companies);
+        }
+
+        /// <summary>
+        /// Lọc các công ty đặc trưng
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("featured")]
+        public async Task<ActionResult<IEnumerable<Company>>> GetFeaturedCompanies()
+        {
+            var companies = await _companyRepository.GetFeaturedCompanies();
+            return Ok(companies);
+        }
+
+        /// <summary>
+        /// Chuyển đổi trạng thái đặc trưng của công ty(đặc trưng => không đặc trưng và ngược lại)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("toggle-feature/{id}")]
+        public async Task<ActionResult> ToggleFeatureCompany(int id)
+        {
+            var success = await _companyRepository.ToggleFeatureCompanyAsync(id);
+            if (!success)
+            {
+                return NotFound($"Không tìm thấy công ty có ID {id}.");
+            }
+            return Ok(new
+            {
+                message = $"Đã thay đổi trạng thái nổi bật của công ty có ID {id} thành công.",
+                companyId = id
+            });
         }
     }
 }

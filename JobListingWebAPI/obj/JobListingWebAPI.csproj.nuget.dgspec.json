@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\React\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj": {}
+    "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\React\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj": {
+    "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\React\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj",
+        "projectUniqueName": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj",
         "projectName": "JobListingWebAPI",
-        "projectPath": "C:\\React\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj",
+        "projectPath": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\JobListingWebAPI.csproj",
         "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\React\\JobListingWeb\\JobListingWebAPI\\obj\\",
+        "outputPath": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,6 +46,38 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AspNetCore.HealthChecks.Redis": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "AspNetCore.HealthChecks.UI.Client": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.23.0, )"
+            },
+            "Betalgo.Ranul.OpenAI": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "EntityFrameworkCore.Triggers": {
+              "target": "Package",
+              "version": "[1.2.3, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.9.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.Google": {
+              "target": "Package",
+              "version": "[8.0.11, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.8, )"
@@ -77,6 +109,34 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.20.1, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[4.9.0, )"
+            },
+            "OpenAI": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.13.1, )"
+            },
+            "Quartz.AspNetCore": {
+              "target": "Package",
+              "version": "[3.13.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

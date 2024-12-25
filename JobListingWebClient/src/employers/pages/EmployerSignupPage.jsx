@@ -73,7 +73,7 @@ const EmployerSignupPage = () => {
       try {
         console.log(JSON.stringify(formData));
         await dispatch(registerEmployer(formData));
-        navigate('/employer/dashboard');
+        navigate('/employer/login');
       } catch (error) {
         console.error('Registration failed:', error);
       }

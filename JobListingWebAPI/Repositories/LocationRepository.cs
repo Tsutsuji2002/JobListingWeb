@@ -17,6 +17,10 @@ namespace JobListingWebAPI.Repositories
             _context = context;
         }
 
+        /// <summary>
+        ///  Lấy toàn bộ các địa điểm
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Location>> GetAllLocationsAsync()
         {
             return await _context.Locations
@@ -25,6 +29,23 @@ namespace JobListingWebAPI.Repositories
                 .ToListAsync();
         }
 
+        /// <summary>
+        ///  Lấy toàn bộ các địa điểm kể cả đã xóa
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Location>> Admin_GetAllLocationsAsync()
+        {
+            return await _context.Locations
+                .Include(l => l.MappingLocations)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Lất địa điểm với id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<LocationModel> GetLocationByIdAsync(int id)
         {
             var location = await _context.Locations
@@ -45,6 +66,11 @@ namespace JobListingWebAPI.Repositories
             };
         }
 
+        /// <summary>
+        /// Thêm địa điểm
+        /// </summary>
+        /// <param name="locationModel"></param>
+        /// <returns></returns>
         public async Task<LocationModel> AddLocationAsync(LocationModel locationModel)
         {
             var location = new Location
@@ -67,6 +93,13 @@ namespace JobListingWebAPI.Repositories
             };
         }
 
+        /// <summary>
+        /// Cập nhật địa điểm
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="locationModel"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
         public async Task<LocationModel> UpdateLocationAsync(int id, LocationModel locationModel)
         {
             var location = await _context.Locations.FindAsync(id);
@@ -92,7 +125,27 @@ namespace JobListingWebAPI.Repositories
             };
         }
 
+        /// <summary>
+        /// Khôi phục địa điểm đã xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> RestoreLocationAsync(int id)
+        {
+            var location = await _context.Locations.FindAsync(id);
+            if (location == null)
+                return false;
 
+            location.IsDeleted = false;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Xóa địa điểm tạm thời
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteLocationAsync(int id)
         {
             var location = await _context.Locations.FindAsync(id);
@@ -104,11 +157,53 @@ namespace JobListingWebAPI.Repositories
             return true;
         }
 
+        /// <summary>
+        /// Xóa địa điểm vĩnh viễn
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteLocationPermanentlyAsync(int id)
+        {
+            var location = await _context.Locations
+                .Include(l => l.MappingLocations)
+                .FirstOrDefaultAsync(l => l.LocationID == id);
+
+            if (location == null)
+                return false;
+
+            _context.MappingLocations.RemoveRange(location.MappingLocations);
+
+            _context.Locations.Remove(location);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Kiểm tra địa điểm tồn tại
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<bool> LocationExistsAsync(int id)
         {
             return await _context.Locations.AnyAsync(l => l.LocationID == id && !l.IsDeleted);
         }
 
+        /// <summary>
+        /// Kiểm tra địa điểm đã bị xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> LocationDeletedAsync(int id)
+        {
+            return await _context.Locations.AnyAsync(l => l.LocationID == id && l.IsDeleted);
+        }
+
+        /// <summary>
+        /// Tìm kiếm địa điểm
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Location>> SearchLocationsAsync(string searchTerm)
         {
             return await _context.Locations

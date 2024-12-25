@@ -29,10 +29,17 @@ export const logoutEmployer = createAsyncThunk(
   'employer/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await employerApi.logout();
-      return null;
+      const response = await employerApi.logout();
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      
+      return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
   }
 );
@@ -84,7 +91,6 @@ const employerSlice = createSlice({
       })
       .addCase(registerEmployer.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isAuthenticated = true;
         state.currentEmployer = action.payload.user;
       })
       .addCase(registerEmployer.rejected, (state, action) => {

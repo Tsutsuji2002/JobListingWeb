@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../components/layout/Layout';
 import CompanyCard from '../components/companies/CompanyCard';
@@ -6,130 +6,236 @@ import CompanyModal from '../components/companies/CompanyModal';
 import CompanyFilters from '../components/companies/CompanyFilters';
 import SearchBar from '../components/common/SearchBar';
 import Pagination from '../components/common/Pagination';
-import { 
-  fetchCompanies, 
-  searchCompanies,
-  selectAllCompanies, 
-  selectCompanyStatus, 
+import {
+  fetchCompanies,
+  selectAllCompanies,
+  selectCompanyStatus,
   selectCompanyError,
-  selectSearchResults
 } from '../../redux/slices/companySlice';
+import { fetchIndustries } from '../../redux/slices/industrySlice';
+import { fetchLocations } from '../../redux/slices/locationSlice';
 
 const CompaniesPage = () => {
   const dispatch = useDispatch();
-  const companies = useSelector(selectAllCompanies);
-  const searchResults = useSelector(selectSearchResults);
-  const status = useSelector(selectCompanyStatus);
-  const error = useSelector(selectCompanyError);
 
+  // Local state management
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [visibleCompanyIds, setVisibleCompanyIds] = useState(new Set());
+  const [filters, setFilters] = useState({
+    industries: [],
+    locations: [],
+    sortBy: 'newest',
+  });
+
+  // Pagination configuration
   const itemsPerPage = 6;
 
-  const displayedCompanies = searchTerm ? searchResults : companies;
-  const totalPages = Math.ceil(displayedCompanies.length / itemsPerPage);
+  // Redux state selectors
+  const companies = useSelector(selectAllCompanies);
+  const industries = useSelector((state) => state.industries.industries);
+  const locations = useSelector((state) => state.locations.locations);
+  const status = useSelector(selectCompanyStatus);
+  const error = useSelector(selectCompanyError);
 
+  // Fetch initial data on component mount
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchCompanies());
+    dispatch(fetchCompanies());
+    dispatch(fetchIndustries());
+    dispatch(fetchLocations());
+  }, [dispatch]);
+
+  // Initialize visible companies when companies data is loaded
+  useEffect(() => {
+    if (companies.length > 0) {
+      setVisibleCompanyIds(new Set(companies.map(company => company?.companyID)));
     }
-  }, [status, dispatch]);
+  }, [companies]);
 
-  const handleCompanyClick = (company) => {
-    setSelectedCompany(company);
+  // Search and filter logic
+  useEffect(() => {
+    const applySearchAndFilters = () => {
+      const matchingIds = new Set();
+      
+      companies.forEach(company => {
+        if (!company) return;
+
+        // Search term matching
+        let matchesSearch = true;
+        if (searchTerm) {
+          const query = searchTerm.toLowerCase();
+          const searchableFields = [
+            company.name,
+            company.description,
+            ...(company.mappingLocations?.map(ml => ml?.location?.name) || []),
+            ...(company.mappingIndustries?.map(mi => mi?.industry?.name) || [])
+          ];
+          
+          matchesSearch = searchableFields.some(field => 
+            String(field || '').toLowerCase().includes(query)
+          );
+        }
+
+        // Filter matching
+        let matchesFilters = true;
+        
+        // Industry filter
+        if (filters.industries.length > 0 && !filters.industries.includes('all')) {
+          matchesFilters = company.mappingIndustries?.some(mi => 
+            filters.industries.includes(mi?.industry?.industryID)
+          );
+        }
+        
+        // Location filter
+        if (filters.locations.length > 0) {
+          matchesFilters = matchesFilters && company.mappingLocations?.some(ml =>
+            filters.locations.includes(ml?.location?.locationID)
+          );
+        }
+
+        // Add to visible set if matches both search and filters
+        if (matchesSearch && matchesFilters) {
+          matchingIds.add(company.companyID);
+        }
+      });
+
+      setVisibleCompanyIds(matchingIds);
+      setCurrentPage(1); // Reset to first page when search/filters change
+    };
+
+    applySearchAndFilters();
+  }, [searchTerm, filters, companies]);
+
+  // Compute visible and sorted companies
+  const visibleAndSortedCompanies = useMemo(() => {
+    const visibleCompanies = companies.filter(company => 
+      visibleCompanyIds.has(company?.companyID)
+    );
+
+    // Apply sorting
+    return [...visibleCompanies].sort((a, b) => {
+      if (!a || !b) return 0;
+
+      switch (filters.sortBy) {
+        case 'name-asc':
+          return (a.name || '').localeCompare(b.name || '');
+        case 'name-desc':
+          return (b.name || '').localeCompare(a.name || '');
+        case 'newest':
+        default:
+          return new Date(b.createdDate || 0) - new Date(a.createdDate || 0);
+      }
+    });
+  }, [companies, visibleCompanyIds, filters.sortBy]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(visibleAndSortedCompanies.length / itemsPerPage);
+  const paginatedCompanies = visibleAndSortedCompanies.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Event handlers
+  const handleCompanyClick = (company) => setSelectedCompany(company);
+  const handleCloseModal = () => setSelectedCompany(null);
+  const handleSearch = (value) => setSearchTerm(value);
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({ ...prev, [filterType]: value }));
   };
-
-  const handleCloseModal = () => {
-    setSelectedCompany(null);
-  };
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
 
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-    if (value.trim()) {
-      dispatch(searchCompanies(value));
-    }
+  // Prepare filter options
+  const filterOptions = {
+    industries: [
+      { label: 'Tất cả ngành nghề', value: 'all', count: companies.length },
+      ...(industries || []).map(ind => ({
+        label: ind.name,
+        value: ind.industryID,
+        count: ind.companyCount
+      }))
+    ],
+    locations: (locations || []).map(loc => ({
+      label: loc.name,
+      value: loc.locationID,
+      count: loc.companyCount
+    })),
   };
 
-  const handleFilterChange = (filterType, value) => {
-    console.log(`Filter ${filterType}:`, value);
-    setCurrentPage(1);
-  };
-
-  const paginatedCompanies = displayedCompanies.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
+  // Loading state
   if (status === 'loading' && !companies.length) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
+        <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>
       </Layout>
     );
   }
 
+  // Error state
   if (status === 'failed') {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-red-600">
-            <p className="text-xl">Error: {error}</p>
-            <button 
-              onClick={() => dispatch(fetchCompanies())}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Try Again
-            </button>
-          </div>
+        <div className="container mx-auto px-4 py-8 text-center">
+          <p className="text-xl text-red-600">Error: {error}</p>
+          <button
+            onClick={() => dispatch(fetchCompanies())}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Thử lại
+          </button>
         </div>
       </Layout>
     );
   }
 
+  // Main render
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Các công ty nổi bật</h2>
-            <SearchBar 
+            <SearchBar
               onSearch={handleSearch}
               initialValue={searchTerm}
               placeholder="Tìm kiếm công ty..."
             />
           </div>
-          <CompanyFilters onFilterChange={handleFilterChange} />
-          {status === 'loading' && companies.length > 0 && (
-            <div className="absolute top-0 left-0 right-0 bg-white bg-opacity-50 h-full flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
-          )}
+
+          <CompanyFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            filterOptions={filterOptions}
+          />
+
           {paginatedCompanies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedCompanies.map((company) => (
-                <CompanyCard 
-                  key={company.CompanyID} 
-                  company={company} 
-                  onClick={handleCompanyClick} 
-                />
+              {companies.map((company) => (
+                <div 
+                  key={company?.companyID}
+                  className={`transition-opacity duration-300 ${
+                    visibleCompanyIds.has(company?.companyID) 
+                      ? 'opacity-100'
+                      : 'opacity-50 pointer-events-none hidden'
+                  }`}
+                >
+                  <CompanyCard 
+                    company={company} 
+                    onClick={handleCompanyClick}
+                  />
+                </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-600">
               <p className="text-xl">Không tìm thấy kết quả phù hợp</p>
               {searchTerm && (
-                <button 
+                <button
                   onClick={() => handleSearch('')}
                   className="mt-4 text-blue-500 hover:text-blue-600"
                 >
@@ -139,6 +245,7 @@ const CompaniesPage = () => {
             </div>
           )}
         </div>
+
         {totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -146,6 +253,7 @@ const CompaniesPage = () => {
             onPageChange={handlePageChange}
           />
         )}
+
         <CompanyModal company={selectedCompany} onClose={handleCloseModal} />
       </div>
     </Layout>

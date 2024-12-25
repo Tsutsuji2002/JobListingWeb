@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Placeholder from '../../../images/placeholder.jpg'
 
 const Hero = () => {
   return (
@@ -16,7 +17,7 @@ const Hero = () => {
             <div className="flex space-x-4">
               <Link
                 to="/jobs"
-                className="bg-white text-blue-600 px-6 py-3 rounded-md font-semibold hover:bg-gray-100"
+                className="border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-blue-600"
               >
                 Duyệt qua việc làm
               </Link>
@@ -30,7 +31,7 @@ const Hero = () => {
           </div>
           <div className="hidden md:block">
             <img
-              src="/api/placeholder/600/400"
+              src={Placeholder}
               alt="Job Search"
               className="rounded-lg shadow-xl"
             />

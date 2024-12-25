@@ -12,6 +12,5 @@ namespace JobListingWebAPI.Entities
         public string? Description { get; set; }
         public bool IsDeleted { get; set; } = false;
         public ICollection<MappingCareer> MappingCareers { get; set; }
-
     }
 }

@@ -10,8 +10,8 @@ namespace JobListingWebAPI.Entities
         public int CompanyID { get; set; }
         [Required, StringLength(100)]
         public string? Name { get; set; }
-        [StringLength(500)]
         public string? Description { get; set; }
+        public string? Benefits { get; set; }
         public string? FoundedYear { get; set; }
         public string? Website { get; set; }
         [StringLength(100)]
@@ -21,11 +21,10 @@ namespace JobListingWebAPI.Entities
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public bool IsFeature { get; set; } = false;
 
         public ICollection<JobListing> JobListings { get; set; }
-        [JsonIgnore]
         public ICollection<MappingLocation> MappingLocations { get; set; }
-        [JsonIgnore]
         public ICollection<MappingIndustry> MappingIndustries { get; set; }
 
         [ForeignKey("User")]

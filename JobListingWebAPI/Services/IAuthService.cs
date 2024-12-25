@@ -6,11 +6,16 @@ namespace JobListingWebAPI.Services
 {
     public interface IAuthService
     {
+        Task<IEnumerable<ApplicationUser>> GetAllUsersByTypeAsync(string userType, bool includeSoftDeleted = false);
+        Task<IdentityResult> SoftDeleteUserAsync(string userId);
+        Task<IdentityResult> PermanentDeleteUserAsync(string userId);
+        Task<IdentityResult> RestoreSoftDeletedUserAsync(string userId);
+        Task<(bool success, string message, ApplicationUser? user, string? token)> HandleGoogleAuthAsync(string idToken);
         Task<(bool success, string message, ApplicationUser? user)> RegisterApplicantAsync(ApplicantRegisterModel model);
         Task<(bool success, string message, ApplicationUser? user)> RegisterEmployerAsync(EmployerRegisterModel model);
-        Task<(bool success, string message, ApplicantUser? user)> LoginApplicantAsync(ApplicantLoginModel model);
-        Task<(bool success, string message, EmployerUser? user, string? token)> LoginEmployerAsync(EmployerLoginModel model);
-        Task<(bool success, string message, AdminUser? user)> LoginAdminAsync(AdminLoginModel model);
+        Task<(bool success, string message, ApplicantUser? user, string? token)> LoginApplicantAsync(ApplicantLoginModel model, string ipAddress);
+        Task<(bool success, string message, EmployerUser? user, string? token)> LoginEmployerAsync(EmployerLoginModel model, string ipAddress);
+        Task<(bool success, string message, AdminUser? user, string? token)> LoginAdminAsync(AdminLoginModel model, string ipAddress);
         Task<string> GetUserRedirectUrl(ApplicationUser user);
         Task LogoutAsync();
         Task<bool> IsEmailAvailable(string email);
@@ -30,5 +35,9 @@ namespace JobListingWebAPI.Services
         Task<(bool success, string message)> AddToRoleAsync(string userId, string roleName);
         Task<(bool success, string message)> RemoveFromRoleAsync(string userId, string roleName);
         Task<bool> IsAccountLocked(string userId);
+        Task SendEmailVerificationCodeAsync(string userId, string newEmail);
+        Task<IdentityResult> ChangeEmailAsync(string userId, string newEmail, string code);
+        Task SendPasswordVerificationCodeAsync(string userId, string currentPassword, string newPassword);
+        Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword, string verificationCode);
     }
 }

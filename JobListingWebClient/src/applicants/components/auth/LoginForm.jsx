@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginApplicant } from '../../../redux/slices/authSlice';
+import { AuthApi } from '../../../services/AuthApi';
 
 export const LoginForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -10,7 +14,82 @@ export const LoginForm = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [googleClientId, setGoogleClientId] = useState('');
 
+  useEffect(() => {
+    const fetchGoogleConfig = async () => {
+      try {
+        const config = await AuthApi.getGoogleConfig();
+        setGoogleClientId(config.clientId);
+      } catch (err) {
+        console.error('Failed to fetch Google config:', err);
+      }
+    };
+    fetchGoogleConfig();
+  }, []);
+
+  // Memoize the Google Sign-In handler using useCallback
+  const handleGoogleSignIn = useCallback(async (response) => {
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const googleLoginResult = await AuthApi.googleLogin(response.credential);
+      
+      // Store token in localStorage
+      localStorage.setItem('token', googleLoginResult.token);
+      console.log(googleLoginResult.user.id);
+      localStorage.setItem('userId', googleLoginResult.user.id);
+
+      // Optional: dispatch an action to update Redux store
+      // You might want to create a googleLogin async thunk similar to loginApplicant
+      
+      // Navigate based on the redirect URL from the backend
+      if (googleLoginResult.redirectUrl) {
+        window.location.href = googleLoginResult.redirectUrl;
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.message || 'Đăng nhập Google không thành công');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [navigate]);
+
+  // Add Google Sign-In script
+  useEffect(() => {
+    if (googleClientId) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleSignIn
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById('googleSignInButton'),
+          { 
+            theme: 'outline', 
+            size: 'large',
+            text: 'continue_with',
+            shape: 'rectangular' 
+          }
+        );
+      };
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [googleClientId, handleGoogleSignIn]);
+
+  // Handle Google Sign-In
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -25,21 +104,17 @@ export const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login-applicant', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const resultAction = await dispatch(loginApplicant({
+        email: formData.email,
+        password: formData.password,
+        rememberMe: formData.rememberMe
+      }));
 
-      const data = await response.json();
-
-      if (data.success) {
-        // Handle successful login
-        navigate('/dashboard');
+      if (loginApplicant.fulfilled.match(resultAction)) {
+        navigate('/');
       } else {
-        setError(data.message || 'Đăng nhập thất bại');
+        // If the action was rejected, set the error message
+        setError(resultAction.payload || 'Đăng nhập thất bại');
       }
     } catch (err) {
       setError('Đã xảy ra lỗi khi đăng nhập');
@@ -107,6 +182,12 @@ export const LoginForm = () => {
       >
         {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
       </button>
+      <div className="mt-4">
+        <div 
+          id="googleSignInButton" 
+          className="w-full flex justify-center"
+        ></div>
+      </div>
     </form>
   );
 };

@@ -1,78 +1,173 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import JobCard from '../components/jobs/JobCard';
-import { FaMapMarkerAlt, FaGlobe, FaUsers, FaIndustry } from 'react-icons/fa';
+import {
+  fetchCompanyById,
+  selectSelectedCompany,
+  selectCompanyStatus,
+  selectCompanyError
+} from '../../redux/slices/companySlice';
+import { FaMapMarkerAlt, FaGlobe, FaUsers, FaIndustry, FaCalendarAlt } from 'react-icons/fa';
+import { ImageApi } from '../../services/ImageApi';
+import HTMLContent from '../../ultils/HTMLContent';
 
 const CompanyDetailPage = () => {
-  const { id } = useParams();
+  const { companyId } = useParams();
+  const dispatch = useDispatch();
+  const company = useSelector(selectSelectedCompany);
+  const status = useSelector(selectCompanyStatus);
+  const error = useSelector(selectCompanyError);
+  const [companyLogoUrl, setCompanyLogoUrl] = useState('');
+  const [companyBackgroundUrl, setCompanyBackgroundUrl] = useState('');
+  const [logoError, setLogoError] = useState(false);
+  const [backgroundError, setBackgroundError] = useState(false);
+
+  useEffect(() => {
+    if (companyId) {
+      dispatch(fetchCompanyById(companyId));
+    }
+    console.log(companyId, company);
+  }, [companyId, dispatch]);
+
+  useEffect(() => {
+    const fetchCompanyImages = async () => {
+      // Reset image states
+      setCompanyLogoUrl('');
+      setCompanyBackgroundUrl('');
+      setLogoError(false);
+      setBackgroundError(false);
   
-  const company = {
-    id: 1,
-    name: "TechCorp Solutions",
-    logo: "/api/placeholder/100/100",
-    description: "TechCorp Solutions is a leading technology company specializing in innovative software solutions for enterprise clients. With over 15 years of experience, we've helped hundreds of businesses transform their digital operations.",
-    location: "San Francisco, CA",
-    website: "www.techcorp.com",
-    employeeCount: "1000-5000",
-    industry: "Information Technology",
-    benefits: [
-      "Competitive salary",
-      "Health, dental, and vision insurance",
-      "401(k) matching",
-      "Flexible working hours",
-      "Remote work options",
-      "Professional development"
-    ],
-    culture: "We foster an inclusive environment where innovation thrives. Our team members are encouraged to think creatively, take initiative, and grow both personally and professionally.",
-    openPositions: [
-      {
-        id: 1,
-        title: "Senior Software Engineer",
-        type: "Full-time",
-        location: "San Francisco, CA",
-        description: "Looking for an experienced software engineer to join our core platform team.",
-        company: "TechCorp Solutions"
-      },
-      {
-        id: 2,
-        title: "Product Manager",
-        type: "Full-time",
-        location: "Remote",
-        description: "Seeking a product manager to lead our enterprise solutions division.",
-        company: "TechCorp Solutions"
+      if (company) {
+        // Fetch Logo
+        if (company.logo) {
+          try {
+            const logoUrl = company.logo.startsWith('data:') 
+              ? company.logo 
+              : `/api/Image${company.logo}`;
+            setCompanyLogoUrl(logoUrl);
+          } catch (error) {
+            setLogoError(true);
+            console.error('Error fetching company logo:', error);
+          }
+        }
+  
+        // Fetch Background
+        if (company.background) {
+          try {
+            const backgroundUrl = company.background.startsWith('data:') 
+              ? company.background 
+              : `/api/Image${company.background}`;
+            setCompanyBackgroundUrl(backgroundUrl);
+          } catch (error) {
+            setBackgroundError(true);
+            console.error('Error fetching company background:', error);
+          }
+        }
       }
-    ]
+    };
+  
+    fetchCompanyImages();
+  }, [company]);
+  
+  // Loading state
+  if (status === 'loading' || !company) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Error state
+  if (status === 'failed') {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center text-red-600">
+            <p className="text-xl">Lỗi khi tải thông tin công ty: {error}</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // No company found
+  if (!company) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center text-gray-600">
+            <p className="text-xl">Không tìm thấy công ty</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  const formatLocations = (mappingLocations) => {
+    return mappingLocations && mappingLocations.length > 0
+      ? mappingLocations.map(loc => loc.location.name).join(', ')
+      : 'Chưa xác định';
+  };
+
+  const formatIndustries = (mappingIndustries) => {
+    return mappingIndustries && mappingIndustries.length > 0
+      ? mappingIndustries.map(ind => ind.industry.name).join(', ')
+      : 'Chưa xác định';
   };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex items-center space-x-6">
-            <img
-              src={company.logo}
-              alt={`${company.name} logo`}
-              className="w-24 h-24 rounded-lg object-cover"
-            />
+        <div
+          className="relative rounded-lg shadow-md p-6 mb-8"
+          style={{
+            backgroundImage: `url(${companyBackgroundUrl || '/api/placeholder/800/400'})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          {/* Overlay for better contrast */}
+          <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
+
+          {/* Content */}
+          <div className="relative flex items-center space-x-6 text-white">
+            <div
+              className="w-24 h-24 rounded-lg bg-white flex items-center justify-center shadow-lg"
+            >
+              <img
+                src={companyLogoUrl || "/api/placeholder/100/100"}
+                alt={`${company.name} logo`}
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
             <div className="flex-grow">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">{company.name}</h1>
+              <h1 className="text-3xl font-bold mb-2 drop-shadow-md">{company.name}</h1>
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center text-gray-600">
-                  <FaMapMarkerAlt className="mr-2" />
-                  <span>{company.location}</span>
+                <div className="flex items-center">
+                  <FaMapMarkerAlt className="mr-2 text-lg" />
+                  <span>{formatLocations(company.mappingLocations)}</span>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <FaGlobe className="mr-2" />
-                  <span>{company.website}</span>
+                <div className="flex items-center">
+                  <FaGlobe className="mr-2 text-lg" />
+                  <Link to={company.website} target="_blank" rel="noopener noreferrer">
+                    <span>{company.website || 'Không có website'}</span>
+                  </Link>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <FaUsers className="mr-2" />
-                  <span>{company.employeeCount} nhân viên</span>
+                <div className="flex items-center">
+                  <FaCalendarAlt className="mr-2 text-lg" />
+                  <span>Năm thành lập: {company.foundedYear || 'Chưa có thông tin'}</span>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <FaIndustry className="mr-2" />
-                  <span>{company.industry}</span>
+                <div className="flex items-center">
+                  <FaIndustry className="mr-2 text-lg" />
+                  <span>{formatIndustries(company.mappingIndustries)}</span>
                 </div>
               </div>
             </div>
@@ -81,41 +176,48 @@ const CompanyDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
+          <section className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Về công ty</h2>
+            <HTMLContent 
+              content={company.description} 
+              className="text-gray-700 prose max-w-none"
+            />
+          </section>
             <section className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Về công ty</h2>
-              <p className="text-gray-700">{company.description}</p>
-            </section>
-
-            <section className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Truyền thống công ty</h2>
-              <p className="text-gray-700">{company.culture}</p>
-            </section>
-
-            <section className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Vị trí tuyển dụng</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Vị trí đang tuyển dụng</h2>
               <div className="grid grid-cols-1 gap-4">
-                {company.openPositions.map((job) => (
-                  <JobCard key={job.id} job={job} onClick={() => {}} />
-                ))}
+                {company.jobListings && company.jobListings.length > 0 ? (
+                  company.jobListings.map((job) => (
+                    <JobCard
+                      key={job.jobListingId}
+                      job={job}
+                      company={company}
+                      onClick={() => {}}
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-600">Hiện tại không có vị trí tuyển dụng</p>
+                )}
               </div>
             </section>
           </div>
 
           <div className="space-y-8">
-            <section className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Lợi ích</h2>
-              <ul className="space-y-2">
-                {company.benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-center text-gray-700">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
+          <section className="bg-white rounded-lg shadow-md p-6 overflow-hidden">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Quyền lợi</h2>
+            {company.benefits ? (
+              <div className="max-w-full">
+                <HTMLContent 
+                  content={company.benefits}
+                  className="text-gray-700 prose max-w-none"
+                />
+              </div>
+            ) : (
+              <p className="text-gray-600">Chưa có thông tin quyền lợi</p>
+            )}
+          </section>
             <button className="w-full bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-300">
-            Theo dõi công ty
+              Theo dõi công ty
             </button>
           </div>
         </div>
