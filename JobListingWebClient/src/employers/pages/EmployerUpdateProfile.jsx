@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchCurrentEmployer, updateEmployerProfile, clearUpdateStatus } from '../../redux/slices/employerSlice';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaBuilding, FaIdCard, FaMapMarkerAlt } from 'react-icons/fa';
-import EmployerLayout from '../components/layout/EmployerLayout';
 import { toast } from 'react-toastify';
 
 const EmployerUpdateProfile = () => {
@@ -62,16 +61,13 @@ const EmployerUpdateProfile = () => {
 
   if (isLoading) {
     return (
-      <EmployerLayout>
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">Đang tải thông tin...</div>
         </div>
-      </EmployerLayout>
     );
   }
 
   return (
-    <EmployerLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-blue-600 text-white">
@@ -141,7 +137,6 @@ const EmployerUpdateProfile = () => {
           </form>
         </div>
       </div>
-    </EmployerLayout>
   );
 };
 

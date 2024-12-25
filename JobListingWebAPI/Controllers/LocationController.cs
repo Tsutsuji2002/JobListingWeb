@@ -16,6 +16,10 @@ namespace JobListingWebAPI.Controllers
             _locationRepository = locationRepository;
         }
 
+        /// <summary>
+        /// Lấy toàn bộ các địa điểm
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationModel>>> GetAllLocations()
         {
@@ -30,6 +34,29 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy toàn bộ các địa điểm kể cả đã xóa
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<LocationModel>>> Admin_GetAllLocations()
+        {
+            try
+            {
+                var locations = await _locationRepository.Admin_GetAllLocationsAsync();
+                return Ok(locations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving locations.");
+            }
+        }
+
+        /// <summary>
+        /// Lấy địa điểm với id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<LocationModel>> GetLocationById(int id)
         {
@@ -48,6 +75,11 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Tìm địa điểm
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<LocationModel>>> SearchLocations([FromQuery] string searchTerm)
         {
@@ -75,6 +107,12 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Thêm địa điểm
+        /// </summary>
+        /// <param name="locationModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<LocationModel>> CreateLocation(LocationModel locationModel)
         {
@@ -111,6 +149,12 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Cập nhật địa điểm
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="locationModel"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateLocation(int id, LocationModel locationModel)
         {
@@ -139,6 +183,11 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Xóa địa điểm tạm thời
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLocation(int id)
         {
@@ -150,6 +199,59 @@ namespace JobListingWebAPI.Controllers
                 }
 
                 var result = await _locationRepository.DeleteLocationAsync(id);
+                if (!result)
+                {
+                    return NotFound($"Location with ID {id} not found.");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the location.");
+            }
+        }
+
+        /// <summary>
+        /// Khôi phục địa điểm
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("restore/{id}")]
+        public async Task<ActionResult> RestoreLocation(int id)
+        {
+            try
+            {
+                if (!await _locationRepository.LocationDeletedAsync(id))
+                {
+                    return NotFound($"Location deleted with ID {id} not found.");
+                }
+
+                var result = await _locationRepository.RestoreLocationAsync(id);
+                if (!result)
+                {
+                    return NotFound($"Location with ID {id} not found.");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while restoring the location.");
+            }
+        }
+
+        /// <summary>
+        /// Xóa địa điểm vĩnh viễn
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("permanent/{id}")]
+        public async Task<ActionResult> DeleteLocationPermanently(int id)
+        {
+            try
+            {
+                var result = await _locationRepository.DeleteLocationPermanentlyAsync(id);
                 if (!result)
                 {
                     return NotFound($"Location with ID {id} not found.");

@@ -21,6 +21,10 @@ namespace JobListingWebAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Lấy toàn bộ ngành
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Industry>>> GetAllIndustries()
         {
@@ -28,6 +32,22 @@ namespace JobListingWebAPI.Controllers
             return Ok(industries);
         }
 
+        /// <summary>
+        /// Lấy toàn bộ ngành kể cả đã xóa
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<Industry>>> Admin_GetAllIndustries()
+        {
+            var industries = await _industryRepository.Admin_GetAllIndustriesAsync();
+            return Ok(industries);
+        }
+
+        /// <summary>
+        /// Thêm ngành mới
+        /// </summary>
+        /// <param name="industryModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<IndustryModel>> AddIndustry(IndustryModel industryModel)
         {
@@ -59,6 +79,12 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Cập nhật ngành
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="industryModel"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateIndustry(int id, IndustryModel industryModel)
         {
@@ -77,6 +103,11 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy ngành với id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<IndustryModel>> GetIndustryById(int id)
         {
@@ -100,6 +131,27 @@ namespace JobListingWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Khôi phục ngành đã xóa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("restore/{id}")]
+        public async Task<ActionResult> RestoreIndustry(int id)
+        {
+            var success = await _industryRepository.RestoreIndustryAsync(id);
+            if (!success)
+            {
+                return NotFound($"Không tìm thấy ngành có ID {id}.");
+            }
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Xóa ngành tạm thời
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteIndustry(int id)
         {
@@ -111,6 +163,27 @@ namespace JobListingWebAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Xóa ngành vĩnh viễn
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("permanent/{id}")]
+        public async Task<ActionResult> DeleteIndustryPermanently(int id)
+        {
+            var success = await _industryRepository.DeleteIndustryPermanentlyAsync(id);
+            if (!success)
+            {
+                return NotFound($"Không tìm thấy ngành có ID {id}.");
+            }
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Kiểm tra ngành tồn tại
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("exists/{id}")]
         public async Task<ActionResult<bool>> IndustryExists(int id)
         {
@@ -118,6 +191,11 @@ namespace JobListingWebAPI.Controllers
             return Ok(exists);
         }
 
+        /// <summary>
+        /// Tìm kiếm ngành
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Industry>>> SearchIndustries(string searchTerm)
         {

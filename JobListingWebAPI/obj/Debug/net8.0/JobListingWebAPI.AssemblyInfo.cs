@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("cd4a3759-753b-401d-9586-85f917fcc7ad")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("JobListingWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a0ba4f34d468d4642f2220cbc9720fe218877c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("JobListingWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JobListingWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

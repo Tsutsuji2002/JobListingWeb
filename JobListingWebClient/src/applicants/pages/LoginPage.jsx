@@ -16,7 +16,7 @@ const LoginPage = () => {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Hoặc{' '}
-            <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link to="/user/signup" className="font-medium text-blue-600 hover:text-blue-500">
               đăng ký tài khoản mới
             </Link>
           </p>

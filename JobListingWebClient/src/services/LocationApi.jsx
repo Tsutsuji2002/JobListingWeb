@@ -11,6 +11,15 @@ export const locationApi = {
     }
   },
 
+  admin_getAllLocations: async () => {
+    try {
+      const response = await api.get('/Location/admin');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || 'Không thể tải danh sách địa điểm';
+    }
+  },
+
   getLocationById: async (id) => {
     try {
       const response = await api.get(`/Location/${id}`);
@@ -38,9 +47,27 @@ export const locationApi = {
     }
   },
 
+  restoreLocation: async (id) => {
+    try {
+      await api.put(`/Location/restore/${id}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data || 'Không thể khôi phục địa điểm';
+    }
+  },
+
   deleteLocation: async (id) => {
     try {
       await api.delete(`/Location/${id}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data || 'Không thể xóa địa điểm';
+    }
+  },
+
+  deleteLocationPermanently: async (id) => {
+    try {
+      await api.delete(`/Location/permanent/${id}`);
       return true;
     } catch (error) {
       throw error.response?.data || 'Không thể xóa địa điểm';

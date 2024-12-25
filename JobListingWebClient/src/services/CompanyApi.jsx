@@ -10,6 +10,16 @@ export const getAllCompanies = async () => {
   }
 };
 
+// Get all companies
+export const admin_getAllCompanies = async () => {
+  try {
+    const response = await api.get('/Company/admin');
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch companies: ' + error.message);
+  }
+};
+
 // Get company by ID
 export const getCompanyById = async (id) => {
   try {
@@ -36,6 +46,7 @@ export const createCompanyWithLocationsAndIndustries = async (companyData) => {
     const formData = new FormData();
     formData.append('name', companyData.get('name'));
     formData.append('description', companyData.get('description'));
+    formData.append('benefits', companyData.get('benefits'));
     formData.append('foundedYear', companyData.get('foundedYear'));
     formData.append('website', companyData.get('website'));
     formData.append('userId', companyData.get('userId'));
@@ -47,8 +58,8 @@ export const createCompanyWithLocationsAndIndustries = async (companyData) => {
       formData.append('background', companyData.get('background'));
     }
 
-    console.log('Company LOC:', companyData.get('mappingLocations'));
-    console.log('Company IND:', companyData.get('mappingIndustries'));
+    console.log('Company benefit:', companyData.get('description'));
+    console.log('Company description:', companyData.get('benefits'));
 
     // Create the company first with multipart/form-data
     const companyResponse = await api.post('/Company', formData, {
@@ -127,9 +138,12 @@ export const updateCompany = async ( id, companyData ) => {
     // Add basic fields
     formData.append('name', companyData.get('name'));
     formData.append('description', companyData.get('description'));
+    formData.append('benefits', companyData.get('benefits'));
     formData.append('foundedYear', companyData.get('foundedYear'));
     formData.append('website', companyData.get('website'));
-
+    if(companyData.get('isFeature')) {
+    formData.append('isFeature', companyData.get('isFeature'));
+    }
     if (companyData.get('logo')) {
       // Check if logo is a File object or a base64 string
       if (companyData.get('logo') instanceof File) {
@@ -171,10 +185,29 @@ export const updateCompany = async ( id, companyData ) => {
   }
 };
 
+// Restore company
+export const restoreCompany = async (id) => {
+  try {
+    await api.put(`/Company/restore/${id}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to restore company ${id}: ` + error.message);
+  }
+};
+
 // Delete company
 export const deleteCompany = async (id) => {
   try {
     await api.delete(`/Company/${id}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to delete company ${id}: ` + error.message);
+  }
+};
+
+export const deleteCompanyPermanently = async (id) => {
+  try {
+    await api.delete(`/Company/permanent/${id}`);
     return true;
   } catch (error) {
     throw new Error(`Failed to delete company ${id}: ` + error.message);
@@ -211,6 +244,15 @@ export const getCompaniesByLocation = async (locationId) => {
   }
 };
 
+export const getFeaturedCompanies = async (locationId) => {
+  try {
+    const response = await api.get(`/Company/featured`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch featured companies: ` + error.message);
+  }
+};
+
 // Search companies
 export const searchCompanies = async (searchTerm) => {
   try {
@@ -226,8 +268,26 @@ export const searchCompanies = async (searchTerm) => {
 export const getCompanyByUserId = async (userId) => {
   try {
     const response = await api.get(`/Company/user/${userId}`);
-    return response.data;
+    return response.data  || null;
   } catch (error) {
     throw new Error(`Failed to fetch company for user ${userId}: ` + error.message);
+  }
+};
+// Permanent Delete Company
+export const permanentDeleteCompany = async (companyId) => {
+  try {
+    const response = await api.delete(`/Company/permanent/${companyId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to permanently delete company ${companyId}: ` + error.message);
+  }
+};
+
+export const toggleFeatureCompany = async (companyId) => {
+  try {
+    const response = await api.put(`/Company/toggle-feature/${companyId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to toggle feature for company ${companyId}: ` + error.message);
   }
 };

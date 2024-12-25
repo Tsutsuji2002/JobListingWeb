@@ -35,7 +35,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">About Us</h3>
+            <h3 className="text-lg font-semibold mb-4">Về chúng tôi</h3>
             <p className="text-gray-400">Chúng tôi kết nối những chuyên gia tài năng với những cơ hội việc làm tuyệt vời.</p>
           </div>
           <div>
@@ -66,7 +66,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Job Board. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} JobListing. All rights reserved.</p>
         </div>
       </div>
     </footer>

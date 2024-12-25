@@ -1,8 +1,28 @@
 import React, { useState } from 'react';
-import { FaChevronDown, FaTimes, FaFilter } from 'react-icons/fa';
+import { FaChevronDown, FaTimes } from 'react-icons/fa';
 
-const FilterOption = ({ label, options, selected, onChange, onClear }) => {
+const FilterOption = ({ label, options, selected, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleOptionClick = (value) => {
+    // If the value is already selected, remove it
+    // If not, add it to the selection
+    const newSelected = selected.includes(value)
+      ? selected.filter(item => item !== value)
+      : [...selected, value];
+    
+    onChange(newSelected);
+  };
+
+  const handleSelectAll = () => {
+    // If all options are selected, clear selection
+    // Otherwise, select all option values
+    const newSelected = selected.length === options.length 
+      ? [] 
+      : options.map(option => option.value);
+    
+    onChange(newSelected);
+  };
 
   return (
     <div className="relative">
@@ -21,15 +41,12 @@ const FilterOption = ({ label, options, selected, onChange, onClear }) => {
           <div className="p-2">
             <div className="flex justify-between items-center mb-2">
               <span className="font-semibold">{label}</span>
-              {selected.length > 0 && (
+              {options.length > 0 && (
                 <button
-                  onClick={() => {
-                    onClear();
-                    setIsOpen(false);
-                  }}
+                  onClick={handleSelectAll}
                   className="text-sm text-blue-600 hover:text-blue-800"
                 >
-                  Xóa tất cả
+                  {selected.length === options.length ? 'Xóa tất cả' : 'Chọn tất cả'}
                 </button>
               )}
             </div>
@@ -39,11 +56,11 @@ const FilterOption = ({ label, options, selected, onChange, onClear }) => {
                   <input
                     type="checkbox"
                     checked={selected.includes(option.value)}
-                    onChange={() => onChange(option.value)}
+                    onChange={() => handleOptionClick(option.value)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <span className="ml-2 text-sm">{option.label}</span>
-                  {option.count && (
+                  {option.count !== undefined && (
                     <span className="ml-auto text-xs text-gray-500">({option.count})</span>
                   )}
                 </label>
@@ -56,31 +73,18 @@ const FilterOption = ({ label, options, selected, onChange, onClear }) => {
   );
 };
 
-const FilterBar = ({ filters, onFilterChange }) => {
-  const [activeFilters, setActiveFilters] = useState({
-    careers: [],
-    industries: [],
-    ranks: [],
-    locations: [],
-    jobTypes: [],
-    salary: [],
-  });
+const FilterBar = ({ filters, onFilterChange, filterOptions }) => {
+  const [activeFilters, setActiveFilters] = useState(
+    Object.keys(filterOptions || {}).reduce((acc, key) => {
+      acc[key] = [];
+      return acc;
+    }, {})
+  );
 
-  const [sortBy, setSortBy] = useState('Mới nhất');
+  const [sortBy, setSortBy] = useState('newest');
 
-  const handleFilterChange = (category, value) => {
-    const newFilters = { ...activeFilters };
-    if (newFilters[category].includes(value)) {
-      newFilters[category] = newFilters[category].filter(item => item !== value);
-    } else {
-      newFilters[category] = [...newFilters[category], value];
-    }
-    setActiveFilters(newFilters);
-    onFilterChange({ ...newFilters, sortBy });
-  };
-
-  const handleClearCategory = (category) => {
-    const newFilters = { ...activeFilters, [category]: [] };
+  const handleFilterChange = (category, values) => {
+    const newFilters = { ...activeFilters, [category]: values };
     setActiveFilters(newFilters);
     onFilterChange({ ...newFilters, sortBy });
   };
@@ -90,61 +94,17 @@ const FilterBar = ({ filters, onFilterChange }) => {
       acc[key] = [];
       return acc;
     }, {});
+    
     setActiveFilters(newFilters);
-    setSortBy('Mới nhất');
-    onFilterChange({ ...newFilters, sortBy: 'Mới nhất' });
-  };
-
-  const filterOptions = {
-    careers: [
-      { label: 'Software Development', value: 'software', count: 145 },
-      { label: 'Data Science', value: 'data', count: 89 },
-      { label: 'Product Management', value: 'product', count: 56 },
-      { label: 'Design', value: 'design', count: 78 },
-      { label: 'Marketing', value: 'marketing', count: 92 },
-    ],
-    industries: [
-      { label: 'Technology', value: 'tech', count: 234 },
-      { label: 'Healthcare', value: 'healthcare', count: 156 },
-      { label: 'Finance', value: 'finance', count: 189 },
-      { label: 'Education', value: 'education', count: 78 },
-      { label: 'E-commerce', value: 'ecommerce', count: 145 },
-    ],
-    ranks: [
-      { label: 'Entry Level', value: 'entry', count: 167 },
-      { label: 'Mid Level', value: 'mid', count: 245 },
-      { label: 'Senior', value: 'senior', count: 189 },
-      { label: 'Lead', value: 'lead', count: 78 },
-      { label: 'Executive', value: 'executive', count: 34 },
-    ],
-    locations: [
-      { label: 'San Francisco', value: 'sf', count: 234 },
-      { label: 'New York', value: 'ny', count: 189 },
-      { label: 'London', value: 'london', count: 167 },
-      { label: 'Remote', value: 'remote', count: 445 },
-      { label: 'Singapore', value: 'singapore', count: 89 },
-    ],
-    jobTypes: [
-      { label: 'Full-time', value: 'fulltime', count: 567 },
-      { label: 'Part-time', value: 'parttime', count: 123 },
-      { label: 'Contract', value: 'contract', count: 234 },
-      { label: 'Internship', value: 'internship', count: 89 },
-      { label: 'Temporary', value: 'temporary', count: 45 },
-    ],
-    salary: [
-      { label: '$0 - $50k', value: '0-50k', count: 123 },
-      { label: '$50k - $100k', value: '50k-100k', count: 234 },
-      { label: '$100k - $150k', value: '100k-150k', count: 189 },
-      { label: '$150k - $200k', value: '150k-200k', count: 98 },
-      { label: '$200k+', value: '200k+', count: 45 },
-    ],
+    setSortBy('newest');
+    onFilterChange({ ...newFilters, sortBy: 'newest' });
   };
 
   const sortOptions = [
-    { label: 'Mới nhất', value: 'Mới nhất' },
-    { label: 'Highest Salary', value: 'salary-desc' },
-    { label: 'Most Relevant', value: 'relevant' },
-    { label: 'Company Name', value: 'company' },
+    { label: 'Mới nhất', value: 'newest' },
+    { label: 'Lương cao nhất', value: 'salary-desc' },
+    { label: 'Liên quan nhất', value: 'relevant' },
+    { label: 'Tên công ty', value: 'company' },
   ];
 
   const hasActiveFilters = Object.values(activeFilters).some(arr => arr.length > 0);
@@ -152,33 +112,39 @@ const FilterBar = ({ filters, onFilterChange }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
       <div className="flex flex-wrap gap-4">
-        {/* Filter Options */}
         <div className="flex flex-wrap gap-2 flex-grow">
-          {Object.entries(filterOptions).map(([key, options]) => (
+          {Object.entries(filterOptions || {}).map(([key, options]) => (
             <FilterOption
               key={key}
-              label={key.charAt(0).toUpperCase() + key.slice(1)}
+              label={
+                key === 'industries' ? 'Ngành nghề' : 
+                key === 'locations' ? 'Địa điểm' :
+                key === 'ranks' ? 'Cấp bậc' :
+                key === 'careers' ? 'Lĩnh vực' :
+                key === 'jobTypes' ? 'Loại công việc' :
+                key === 'salary' ? 'Mức lương' : 
+                key.charAt(0).toUpperCase() + key.slice(1)
+              }
               options={options}
               selected={activeFilters[key]}
-              onChange={(value) => handleFilterChange(key, value)}
-              onClear={() => handleClearCategory(key)}
+              onChange={(values) => handleFilterChange(key, values)}
             />
           ))}
         </div>
 
-        {/* Sort By Dropdown */}
         <div className="relative">
           <select
             value={sortBy}
             onChange={(e) => {
-              setSortBy(e.target.value);
-              onFilterChange({ ...activeFilters, sortBy: e.target.value });
+              const newSortBy = e.target.value;
+              setSortBy(newSortBy);
+              onFilterChange({ ...activeFilters, sortBy: newSortBy });
             }}
             className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm appearance-none pr-8"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                Sort by: {option.label}
+                Sắp xếp theo: {option.label}
               </option>
             ))}
           </select>
@@ -186,19 +152,18 @@ const FilterBar = ({ filters, onFilterChange }) => {
         </div>
       </div>
 
-      {/* Active Filters */}
       {hasActiveFilters && (
         <div className="mt-4 flex flex-wrap gap-2 items-center">
-          <span className="text-sm text-gray-600">Active filters:</span>
+          <span className="text-sm text-gray-600">Bộ lọc đang áp dụng:</span>
           {Object.entries(activeFilters).map(([category, values]) =>
             values.map((value) => (
               <span
                 key={`${category}-${value}`}
                 className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
               >
-                {filterOptions[category].find(opt => opt.value === value)?.label}
+                {filterOptions && filterOptions[category].find(opt => opt.value === value)?.label}
                 <button
-                  onClick={() => handleFilterChange(category, value)}
+                  onClick={() => handleFilterChange(category, activeFilters[category].filter(item => item !== value))}
                   className="ml-2 text-blue-600 hover:text-blue-800"
                 >
                   <FaTimes size={12} />

@@ -33,6 +33,12 @@ namespace JobListingWebAPI.Migrations
                     b.Property<DateTime>("ApplicationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CVID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CoverLeter")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("JobID")
                         .HasColumnType("int");
 
@@ -43,6 +49,8 @@ namespace JobListingWebAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ApplicationID");
+
+                    b.HasIndex("CVID");
 
                     b.HasIndex("JobID");
 
@@ -202,6 +210,29 @@ namespace JobListingWebAPI.Migrations
                     b.ToTable("Blogs");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.BlogTag", b =>
+                {
+                    b.Property<int>("MapId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MapId"));
+
+                    b.Property<int>("BlogID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagID")
+                        .HasColumnType("int");
+
+                    b.HasKey("MapId");
+
+                    b.HasIndex("BlogID");
+
+                    b.HasIndex("TagID");
+
+                    b.ToTable("BlogTags");
+                });
+
             modelBuilder.Entity("JobListingWebAPI.Entities.BlogType", b =>
                 {
                     b.Property<int>("BlogTypeID")
@@ -209,6 +240,9 @@ namespace JobListingWebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogTypeID"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -221,6 +255,39 @@ namespace JobListingWebAPI.Migrations
                     b.HasKey("BlogTypeID");
 
                     b.ToTable("BlogTypes");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.CV", b =>
+                {
+                    b.Property<int>("CVID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CVID"));
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CVID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CVs");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Career", b =>
@@ -246,6 +313,103 @@ namespace JobListingWebAPI.Migrations
                     b.HasKey("CareerID");
 
                     b.ToTable("Careers");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatFile", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FileType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MessageId")
+                        .IsUnique()
+                        .HasFilter("[MessageId] IS NOT NULL");
+
+                    b.ToTable("ChatFiles");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatMessage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChatRoomId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EncryptedContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InitializationVector")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatRoomId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatRoom", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmployerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastMessageAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicantId");
+
+                    b.HasIndex("EmployerId", "ApplicantId")
+                        .IsUnique()
+                        .HasFilter("[EmployerId] IS NOT NULL AND [ApplicantId] IS NOT NULL");
+
+                    b.ToTable("ChatRooms");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Comment", b =>
@@ -293,17 +457,22 @@ namespace JobListingWebAPI.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Benefits")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FoundedYear")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFeature")
                         .HasColumnType("bit");
 
                     b.Property<string>("Logo")
@@ -329,6 +498,32 @@ namespace JobListingWebAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.FavoriteJob", b =>
+                {
+                    b.Property<int>("FavoriteJobID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FavoriteJobID"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("FavoriteJobID");
+
+                    b.HasIndex("JobID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("FavoriteJobs");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Industry", b =>
@@ -385,6 +580,10 @@ namespace JobListingWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobID"));
 
+                    b.Property<string>("Benefits")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("ClosingDate")
                         .HasColumnType("datetime2");
 
@@ -393,6 +592,7 @@ namespace JobListingWebAPI.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Education")
@@ -405,22 +605,29 @@ namespace JobListingWebAPI.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("JobCategory")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUrgent")
+                        .HasColumnType("bit");
 
                     b.Property<string>("JobDuties")
+                        .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("JobLevelID")
+                        .HasMaxLength(100)
                         .HasColumnType("int");
 
                     b.Property<int>("LocationID")
                         .HasColumnType("int");
 
                     b.Property<string>("MinimumQualifications")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberofRecruitment")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PostedDate")
                         .HasColumnType("datetime2");
@@ -432,6 +639,9 @@ namespace JobListingWebAPI.Migrations
                     b.Property<string>("Salary")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -448,6 +658,8 @@ namespace JobListingWebAPI.Migrations
                     b.HasIndex("IndustryID");
 
                     b.HasIndex("JobLevelID");
+
+                    b.HasIndex("LocationID");
 
                     b.ToTable("JobListings");
                 });
@@ -666,6 +878,66 @@ namespace JobListingWebAPI.Migrations
                     b.ToTable("Sliders");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.Subscriber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("PreferredIndustryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PreferredJobLevelId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PreferredLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UnsubscribedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PreferredIndustryId");
+
+                    b.HasIndex("PreferredJobLevelId");
+
+                    b.HasIndex("PreferredLocationId");
+
+                    b.ToTable("Subscribers");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.Tag", b =>
+                {
+                    b.Property<int>("TagID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagID"));
+
+                    b.Property<string>("TagName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TagID");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -813,6 +1085,9 @@ namespace JobListingWebAPI.Migrations
                 {
                     b.HasBaseType("JobListingWebAPI.Entities.ApplicationUser");
 
+                    b.Property<bool>("ReceiveDailyJobMatches")
+                        .HasColumnType("bit");
+
                     b.HasDiscriminator().HasValue("ApplicantUser");
                 });
 
@@ -831,6 +1106,10 @@ namespace JobListingWebAPI.Migrations
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Application", b =>
                 {
+                    b.HasOne("JobListingWebAPI.Entities.CV", "CV")
+                        .WithMany("Applications")
+                        .HasForeignKey("CVID");
+
                     b.HasOne("JobListingWebAPI.Entities.JobListing", "JobListing")
                         .WithMany("Applications")
                         .HasForeignKey("JobID")
@@ -840,6 +1119,8 @@ namespace JobListingWebAPI.Migrations
                     b.HasOne("JobListingWebAPI.Entities.ApplicantUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("CV");
 
                     b.Navigation("JobListing");
 
@@ -853,6 +1134,78 @@ namespace JobListingWebAPI.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.BlogTag", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.Blog", "Blog")
+                        .WithMany("BlogTags")
+                        .HasForeignKey("BlogID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobListingWebAPI.Entities.Tag", "Tag")
+                        .WithMany("BlogTags")
+                        .HasForeignKey("TagID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blog");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.CV", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.ApplicantUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatFile", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.ChatMessage", "Message")
+                        .WithOne("File")
+                        .HasForeignKey("JobListingWebAPI.Entities.ChatFile", "MessageId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Message");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.ChatRoom", "ChatRoom")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatRoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("JobListingWebAPI.Entities.ApplicationUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ChatRoom");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatRoom", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.ApplicantUser", "Applicant")
+                        .WithMany()
+                        .HasForeignKey("ApplicantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("JobListingWebAPI.Entities.EmployerUser", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Applicant");
+
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Comment", b =>
@@ -881,6 +1234,24 @@ namespace JobListingWebAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.FavoriteJob", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.JobListing", "JobListing")
+                        .WithMany("FavoriteJobs")
+                        .HasForeignKey("JobID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobListingWebAPI.Entities.ApplicantUser", "User")
+                        .WithMany("FavoriteJobs")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("JobListing");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("JobListingWebAPI.Entities.JobListing", b =>
                 {
                     b.HasOne("JobListingWebAPI.Entities.Company", "Company")
@@ -901,11 +1272,19 @@ namespace JobListingWebAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("JobListingWebAPI.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Company");
 
                     b.Navigation("Industry");
 
                     b.Navigation("JobLevel");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.MappingCareer", b =>
@@ -995,6 +1374,30 @@ namespace JobListingWebAPI.Migrations
                     b.Navigation("Navigations");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.Subscriber", b =>
+                {
+                    b.HasOne("JobListingWebAPI.Entities.Industry", "PreferredIndustry")
+                        .WithMany("Subscribers")
+                        .HasForeignKey("PreferredIndustryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("JobListingWebAPI.Entities.JobLevel", "PreferredJobLevel")
+                        .WithMany("Subscribers")
+                        .HasForeignKey("PreferredJobLevelId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("JobListingWebAPI.Entities.Location", "PreferredLocation")
+                        .WithMany("Subscribers")
+                        .HasForeignKey("PreferredLocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("PreferredIndustry");
+
+                    b.Navigation("PreferredJobLevel");
+
+                    b.Navigation("PreferredLocation");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1048,6 +1451,8 @@ namespace JobListingWebAPI.Migrations
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Blog", b =>
                 {
+                    b.Navigation("BlogTags");
+
                     b.Navigation("Comments");
 
                     b.Navigation("MappingTypes");
@@ -1058,9 +1463,24 @@ namespace JobListingWebAPI.Migrations
                     b.Navigation("MappingTypes");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.CV", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
             modelBuilder.Entity("JobListingWebAPI.Entities.Career", b =>
                 {
                     b.Navigation("MappingCareers");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatMessage", b =>
+                {
+                    b.Navigation("File");
+                });
+
+            modelBuilder.Entity("JobListingWebAPI.Entities.ChatRoom", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Company", b =>
@@ -1077,16 +1497,22 @@ namespace JobListingWebAPI.Migrations
                     b.Navigation("JobListings");
 
                     b.Navigation("MappingIndustries");
+
+                    b.Navigation("Subscribers");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.JobLevel", b =>
                 {
                     b.Navigation("JobListings");
+
+                    b.Navigation("Subscribers");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.JobListing", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("FavoriteJobs");
 
                     b.Navigation("MappingCareers");
                 });
@@ -1094,6 +1520,8 @@ namespace JobListingWebAPI.Migrations
             modelBuilder.Entity("JobListingWebAPI.Entities.Location", b =>
                 {
                     b.Navigation("MappingLocations");
+
+                    b.Navigation("Subscribers");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.Navigation", b =>
@@ -1101,9 +1529,16 @@ namespace JobListingWebAPI.Migrations
                     b.Navigation("NavigationExtends");
                 });
 
+            modelBuilder.Entity("JobListingWebAPI.Entities.Tag", b =>
+                {
+                    b.Navigation("BlogTags");
+                });
+
             modelBuilder.Entity("JobListingWebAPI.Entities.ApplicantUser", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("FavoriteJobs");
                 });
 
             modelBuilder.Entity("JobListingWebAPI.Entities.EmployerUser", b =>

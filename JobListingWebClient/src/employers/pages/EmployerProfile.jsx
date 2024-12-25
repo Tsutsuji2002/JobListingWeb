@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchCurrentEmployer } from '../../redux/slices/employerSlice';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FaCheck, FaTimes, FaLock, FaEdit, FaUser, FaBuilding, FaPhone, FaEnvelope, FaMapMarkerAlt, FaCalendar, FaIdCard } from 'react-icons/fa';
-import EmployerLayout from '../components/layout/EmployerLayout';
 
 const EmployerProfile = () => {
   const dispatch = useDispatch();
   const { currentEmployer, isLoading, error } = useSelector((state) => state.employer);
-  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false);
 
   const formatDate = (date) => {
     if (!date) return 'Chưa có thông tin';
@@ -32,36 +31,29 @@ const EmployerProfile = () => {
 
   if (isLoading) {
     return (
-      <EmployerLayout>
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">Đang tải thông tin...</div>
         </div>
-      </EmployerLayout>
     );
   }
 
   if (error) {
     return (
-      <EmployerLayout>
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-red-600">Có lỗi xảy ra: {error}</div>
         </div>
-      </EmployerLayout>
     );
   }
 
   if (!currentEmployer) {
     return (
-      <EmployerLayout>
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">Không tìm thấy thông tin người dùng</div>
         </div>
-      </EmployerLayout>
     );
   }
 
   return (
-    <EmployerLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-6 py-4 bg-blue-600 text-white flex justify-between items-center">
@@ -169,7 +161,6 @@ const EmployerProfile = () => {
           </div>
         </div>
       </div>
-    </EmployerLayout>
   );
 };
 

@@ -14,6 +14,18 @@ export const fetchLocations = createAsyncThunk(
   }
 );
 
+export const fetchAdminLocations = createAsyncThunk(
+  'locations/fetchAdminAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      const locations = await locationApi.admin_getAllLocations();
+      return locations;
+    } catch (error) {
+      return rejectWithValue(error.toString());
+    }
+  }
+);
+
 export const fetchLocationById = createAsyncThunk(
   'locations/fetchById',
   async (id, { rejectWithValue }) => {
@@ -50,11 +62,35 @@ export const updateLocation = createAsyncThunk(
   }
 );
 
+export const restoreLocation = createAsyncThunk(
+  'locations/restore',
+  async (id, { rejectWithValue }) => {
+    try {
+      await locationApi.restoreLocation(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.toString());
+    }
+  }
+);
+
 export const deleteLocation = createAsyncThunk(
   'locations/delete',
   async (id, { rejectWithValue }) => {
     try {
       await locationApi.deleteLocation(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.toString());
+    }
+  }
+);
+
+export const deleteLocationPermanently = createAsyncThunk(
+  'locations/permanent/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await locationApi.deleteLocationPermanently(id);
       return id;
     } catch (error) {
       return rejectWithValue(error.toString());
@@ -111,6 +147,18 @@ const locationSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload;
       })
+      .addCase(fetchAdminLocations.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchAdminLocations.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.locations = action.payload;
+        state.lastUpdated = new Date().toISOString();
+      })
+      .addCase(fetchAdminLocations.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
 
       // Fetch location by id
       .addCase(fetchLocationById.pending, (state) => {
@@ -145,7 +193,7 @@ const locationSlice = createSlice({
       })
       .addCase(updateLocation.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        const index = state.locations.findIndex(location => location.id === action.payload.id);
+        const index = state.locations.findIndex(location => location.locationID === action.payload.id);
         if (index !== -1) {
           state.locations[index] = action.payload;
         }
@@ -156,19 +204,49 @@ const locationSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Restore location
+      .addCase(restoreLocation.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(restoreLocation.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.locations = state.locations.filter(location => location.locationID !== action.payload);
+        state.lastUpdated = new Date().toISOString();
+      })
+      .addCase(restoreLocation.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+
       // Delete location
       .addCase(deleteLocation.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(deleteLocation.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.locations = state.locations.filter(location => location.id !== action.payload);
+        state.locations = state.locations.filter(location => location.locationID !== action.payload);
         state.lastUpdated = new Date().toISOString();
       })
       .addCase(deleteLocation.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
+
+       // Permanently delete location
+       .addCase(deleteLocationPermanently.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteLocationPermanently.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.locations = state.locations.filter(location => location.locationID !== action.payload);
+        state.lastUpdated = new Date().toISOString();
+      })
+      .addCase(deleteLocationPermanently.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+
 
       // Search locations
       .addCase(searchLocations.pending, (state) => {
@@ -189,7 +267,7 @@ const locationSlice = createSlice({
 export const { clearSelectedLocation, clearSearchResults, clearError } = locationSlice.actions;
 
 // Selectors
-export const selectAllLocations = (state) => state.locations.items;
+export const selectAllLocations = (state) => state.locations.locations;
 export const selectSelectedLocation = (state) => state.locations.selectedLocation;
 export const selectSearchResults = (state) => state.locations.searchResults;
 export const selectLocationStatus = (state) => state.locations.status;

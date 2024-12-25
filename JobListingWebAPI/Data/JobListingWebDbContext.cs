@@ -12,16 +12,20 @@ namespace JobListingWebAPI.Data
         {
 
         }
+
         public DbSet<ApplicantUser> ApplicantUsers { get; set; }
         public DbSet<EmployerUser> EmployerUsers { get; set; }
         public DbSet<AdminUser> AdminUsers { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogTag> BlogTags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<JobListing> JobListings { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Industry> Industries { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<CV> CVs { get; set; }
         public DbSet<MappingLocation> MappingLocations { get; set; }
         public DbSet<MappingIndustry> MappingIndustries { get; set; }
         public DbSet<MappingCareer> MappingCareers { get; set; }
@@ -32,7 +36,11 @@ namespace JobListingWebAPI.Data
         public DbSet<MappingType> MappingTypes { get; set; }
         public DbSet<Career> Careers { get; set; }
         public DbSet<NavigationExtend> NavigationExtends { get; set; }
-
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatFile> ChatFiles { get; set; }
+        public DbSet<Subscriber> Subscribers { get; set; }
+        public DbSet<FavoriteJob> FavoriteJobs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -46,6 +54,22 @@ namespace JobListingWebAPI.Data
                 .HasMany(u => u.Blogs)
                 .WithOne(b => b.User)
                 .HasForeignKey(c => c.UserId);
+            // Tag relationships
+            modelBuilder.Entity<Tag>()
+                .HasMany(b => b.BlogTags)
+                .WithOne(c => c.Tag)
+                .HasForeignKey(c => c.BlogID);
+
+            // BlogTag relationships
+            modelBuilder.Entity<BlogTag>()
+                .HasOne(ml => ml.Tag)
+                .WithMany(c => c.BlogTags)
+                .HasForeignKey(ml => ml.TagID);
+
+            modelBuilder.Entity<BlogTag>()
+                .HasOne(ml => ml.Blog)
+                .WithMany(l => l.BlogTags)
+                .HasForeignKey(ml => ml.BlogID);
 
             // Comment relationships
             modelBuilder.Entity<Comment>()
@@ -120,6 +144,10 @@ namespace JobListingWebAPI.Data
                 .HasOne(a => a.JobListing)
                 .WithMany(j => j.Applications)
                 .HasForeignKey(a => a.JobID);
+            modelBuilder.Entity<Application>()
+                .HasOne(a => a.CV)
+                .WithMany(j => j.Applications)
+                .HasForeignKey(a => a.CVID);
 
             // MappingLocation relationships
             modelBuilder.Entity<MappingLocation>()
@@ -182,6 +210,92 @@ namespace JobListingWebAPI.Data
                 .HasOne(j => j.Navigations)
                 .WithMany(jl => jl.NavigationExtends)
                 .HasForeignKey(j => j.ParentNavID);
+            // Configure ChatRoom relationships
+            modelBuilder.Entity<ChatRoom>()
+                .HasOne(cr => cr.Employer)
+                .WithMany()
+                .HasForeignKey(cr => cr.EmployerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatRoom>()
+                .HasOne(cr => cr.Applicant)
+                .WithMany()
+                .HasForeignKey(cr => cr.ApplicantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatRoom>()
+                .HasMany(cr => cr.Messages)
+                .WithOne(m => m.ChatRoom)
+                .HasForeignKey(m => m.ChatRoomId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure ChatMessage relationships
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(cm => cm.Sender)
+                .WithMany()
+                .HasForeignKey(cm => cm.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(cm => cm.File)
+                .WithOne(cf => cf.Message)
+                .HasForeignKey<ChatFile>(cf => cf.MessageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Additional configurations for ChatRoom
+            modelBuilder.Entity<ChatRoom>()
+                .HasIndex(cr => new { cr.EmployerId, cr.ApplicantId })
+                .IsUnique();
+
+            // Additional configurations for ChatMessage
+            modelBuilder.Entity<ChatMessage>()
+                .Property(cm => cm.EncryptedContent)
+                .IsRequired();
+
+            modelBuilder.Entity<ChatMessage>()
+                .Property(cm => cm.Type)
+                .HasConversion<string>();
+
+            // Configure FavoriteJobs entity
+            modelBuilder.Entity<FavoriteJob>(entity =>
+            {
+                entity.HasKey(e => e.FavoriteJobID);
+
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.FavoriteJobs)
+                    .HasForeignKey(e => e.UserID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.JobListing)
+                    .WithMany(j => j.FavoriteJobs)
+                    .HasForeignKey(e => e.JobID)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configure Subscriber to Industry relationship
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.PreferredIndustry)
+                .WithMany(i => i.Subscribers)
+                .HasForeignKey(s => s.PreferredIndustryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Subscriber to Location relationship
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.PreferredLocation)
+                .WithMany(l => l.Subscribers)
+                .HasForeignKey(s => s.PreferredLocationId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Subscriber to JobLevel relationship
+            modelBuilder.Entity<Subscriber>()
+                .HasOne(s => s.PreferredJobLevel)
+                .WithMany(j => j.Subscribers)
+                .HasForeignKey(s => s.PreferredJobLevelId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            //modelBuilder.Entity<Subscriber>()
+            //    .HasIndex(s => s.Email)
+            //    .IsUnique();
 
         }
     }

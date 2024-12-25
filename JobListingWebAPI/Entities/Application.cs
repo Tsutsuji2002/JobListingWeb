@@ -18,5 +18,9 @@ namespace JobListingWebAPI.Entities
         [ForeignKey("User")]
         public string? UserId { get; set; }
         public ApplicantUser User { get; set; }
+        public string? CoverLeter { get; set; }
+        [ForeignKey("CV")]
+        public int? CVID { get; set; }
+        public CV CV { get; set; }
     }
 }

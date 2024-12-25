@@ -28,8 +28,8 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             // Handle unauthorized access
             localStorage.removeItem('token');
-            if (!window.location.pathname.includes('/employer/login')) {
-                window.location.href = '/employer/dashboard';
+            if (!window.location.pathname.includes('/user/login')) {
+                window.location.href = '/';
             }
         }
         return Promise.reject(error);

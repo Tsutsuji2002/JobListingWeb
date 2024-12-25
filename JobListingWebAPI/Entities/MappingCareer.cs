@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace JobListingWebAPI.Entities
 {
@@ -9,9 +10,11 @@ namespace JobListingWebAPI.Entities
         public int MapID { get; set; }
         [ForeignKey("Career")]
         public int CareerID { get; set; }
+        [JsonIgnore]
         public Career Career { get; set; }
         [ForeignKey("JobListing")]
         public int JobID { get; set; }
+        [JsonIgnore]
         public JobListing JobListing { get; set; }
 
     }
