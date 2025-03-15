@@ -3,51 +3,12 @@
   "WorkspaceRootPath": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\controllers\\applicationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:controllers\\applicationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\entities\\chatroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:entities\\chatroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\entities\\chatmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:entities\\chatmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/LAPTOP_43O2RGQJ_TRUNGTRUNG/JobListingWebDatabase/True/SqlTable/dbo.ChatRooms.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\services\\ichatencryptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:services\\ichatencryptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\entities\\chatfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:entities\\chatfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|c:\\react\\joblistingweb\\joblistingweb\\joblistingwebapi\\services\\chatencryptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9EBB9AB3-521F-452E-8066-F969F6C1A996}|JobListingWebAPI.csproj|solutionrelative:services\\chatencryptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\EncryptionService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Services\\EncryptionService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\ChatService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Services\\ChatService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -66,144 +27,28 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ApplicationController.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Controllers\\ApplicationController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ApplicationController.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Controllers\\ApplicationController.cs",
-              "RelativeToolTip": "Controllers\\ApplicationController.cs",
-              "ViewState": "AQIAAHoAAAAAAAAAAAAIwIkAAAAgAAAA",
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "Services\\AuthService.cs",
+              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\AuthService.cs",
+              "RelativeToolTip": "Services\\AuthService.cs",
+              "ViewState": "AQIAANEAAAAAAAAAAAAAwO8AAAA/AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T06:57:37.02Z",
+              "WhenOpened": "2025-01-07T05:40:20.375Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ChatRoom.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatRoom.cs",
-              "RelativeDocumentMoniker": "Entities\\ChatRoom.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatRoom.cs",
-              "RelativeToolTip": "Entities\\ChatRoom.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAApwBAAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T06:32:25.12Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IChatEncryptionService.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\IChatEncryptionService.cs",
-              "RelativeDocumentMoniker": "Services\\IChatEncryptionService.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\IChatEncryptionService.cs",
-              "RelativeToolTip": "Services\\IChatEncryptionService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:32:54.304Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAOwAAAAAAAAAAAAAAPgAAAA0AAAA",
+              "ViewState": "AQIAAGMAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:29:11.903Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ChatController.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Controllers\\ChatController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ChatController.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Controllers\\ChatController.cs",
-              "RelativeToolTip": "Controllers\\ChatController.cs",
-              "ViewState": "AQIAACIAAAAAAAAAAAAYwC0AAAAxAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:27:12.271Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ChatMessage.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatMessage.cs",
-              "RelativeDocumentMoniker": "Entities\\ChatMessage.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatMessage.cs",
-              "RelativeToolTip": "Entities\\ChatMessage.cs",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAMwBsAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:20:35.685Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "ChatFile.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatFile.cs",
-              "RelativeDocumentMoniker": "Entities\\ChatFile.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Entities\\ChatFile.cs",
-              "RelativeToolTip": "Entities\\ChatFile.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:18:23.761Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "EncryptionService.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\EncryptionService.cs",
-              "RelativeDocumentMoniker": "Services\\EncryptionService.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\EncryptionService.cs",
-              "RelativeToolTip": "Services\\EncryptionService.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAoAAABBAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:17:11.596Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ChatService.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\ChatService.cs",
-              "RelativeDocumentMoniker": "Services\\ChatService.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\ChatService.cs",
-              "RelativeToolTip": "Services\\ChatService.cs",
-              "ViewState": "AQIAADEAAAAAAAAAAAAuwDsAAAAqAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:13:14.044Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAAAB4AAAAgAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-12-24T05:10:55.286Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "dbo.ChatRooms [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/LAPTOP_43O2RGQJ_TRUNGTRUNG/JobListingWebDatabase/True/SqlTable/dbo.ChatRooms.sql",
-              "ToolTip": "dbo.ChatRooms [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-12-24T05:37:46.16Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ChatEncryptionService.cs",
-              "DocumentMoniker": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\ChatEncryptionService.cs",
-              "RelativeDocumentMoniker": "Services\\ChatEncryptionService.cs",
-              "ToolTip": "C:\\React\\JobListingWeb\\JobListingWeb\\JobListingWebAPI\\Services\\ChatEncryptionService.cs",
-              "RelativeToolTip": "Services\\ChatEncryptionService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T04:14:43.292Z"
+              "WhenOpened": "2025-01-07T05:40:04.221Z",
+              "EditorCaption": ""
             }
           ]
         }
