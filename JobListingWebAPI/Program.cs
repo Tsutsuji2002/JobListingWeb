@@ -308,6 +308,7 @@ app.UseStaticFiles();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
-app.Run();
+// Health check endpoint (for Docker/K8s)
+app.MapHealthChecks("/health");
 
 app.Run();

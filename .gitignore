@@ -1,0 +1,76 @@
+# ============================================================
+# JobListingWeb - Root .gitignore
+# ============================================================
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+.env.prod.local
+
+# Secrets
+*.pem
+*.key
+secrets/
+credentials/
+
+# Docker
+.dockerignore
+
+# Build outputs
+*/bin/
+*/obj/
+*/build/
+*/dist/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test results
+TestResults/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# SQL Server
+*.mdf
+*.ldf
+
+# NuGet
+packages/
+
+# Node (for API folder - if using Node)
+node_modules/
+
+# Azure functions local settings
+local.settings.json
+
+# Webpack build outputs
+wwwroot/
+
+# Azure
+.slignore
+
+# Backup files
+*.bak

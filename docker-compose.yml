@@ -1,0 +1,146 @@
+# ============================================================
+# JobListingWeb - Full-Stack Docker Compose
+# ============================================================
+# Usage:
+#   Development : docker compose -f docker-compose.yml up
+#   Staging    : docker compose -f docker-compose.staging.yml up
+#   Production : docker compose -f docker-compose.prod.yml up
+#
+# Prerequisites:
+#   - Docker Engine 24.0+
+#   - .env file in the same directory (copy from .env.example)
+# ============================================================
+
+services:
+  # ------------------------------------------------------------
+  # SQL Server Database
+  # ------------------------------------------------------------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: jlw_sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${DB_SA_PASSWORD:?SA password is required}
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - jlw_network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD} -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # ------------------------------------------------------------
+  # Redis Cache
+  # ------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: jlw_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - jlw_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis123}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ------------------------------------------------------------
+  # ASP.NET Core Web API
+  # ------------------------------------------------------------
+  api:
+    build:
+      context: ./JobListingWebAPI
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: jlw_api
+    environment:
+      ASPNETCORE_URLS: http://+:8080;https://+:8081
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ConnectionStrings__JobListingWeb: "Data Source=sqlserver;Database=${DB_NAME:-JobListingWebDatabase};User Id=sa;Password=${DB_SA_PASSWORD};Trust Server Certificate=True;Encrypt=False"
+      ConnectionStrings__Redis: "default,password=${REDIS_PASSWORD:-redis123};abortConnect=false"
+      JWT__Secret: ${JWT_SECRET:?JWT secret is required}
+      JWT__ValidAudience: ${JWT_AUDIENCE:-ApplicationUser}
+      JWT__ValidIssuer: ${JWT_ISSUER:-https://api.example.com}
+      JWT__ExpireDay: 30
+      GoogleAuth__ClientId: ${GOOGLE_CLIENT_ID:-}
+      GoogleAuth__ClientSecret: ${GOOGLE_CLIENT_SECRET:-}
+      AzureStorage__ConnectionString: ${AZURE_STORAGE_CONNECTION_STRING:-UseDevelopmentStorage=true}
+      EmailSettings__Host: ${EMAIL_HOST:-smtp.example.com}
+      EmailSettings__Port: ${EMAIL_PORT:-587}
+      EmailSettings__Username: ${EMAIL_USERNAME:-}
+      EmailSettings__Password: ${EMAIL_PASSWORD:-}
+      EmailSettings__FromEmail: ${EMAIL_FROM:-noreply@example.com}
+      EmailSettings__FromName: ${EMAIL_FROM_NAME:-JobListingWeb}
+      OpenAISettings__ApiKey: ${OPENAI_API_KEY:-}
+      GemAI__ApiKey: ${GEMINI_API_KEY:-}
+    ports:
+      - "5070:8080"
+      - "7082:8081"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - jlw_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  # ------------------------------------------------------------
+  # React Frontend (NGINX)
+  # ------------------------------------------------------------
+  client:
+    build:
+      context: ./JobListingWebClient
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:7082/api}
+        REACT_APP_UI_URL: ${REACT_APP_UI_URL:-http://localhost:3000}
+    container_name: jlw_client
+    ports:
+      - "3000:80"
+      - "3001:443"
+    depends_on:
+      api:
+        condition: service_started
+    networks:
+      - jlw_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+# ------------------------------------------------------------
+# Networks
+# ------------------------------------------------------------
+networks:
+  jlw_network:
+    driver: bridge
+
+# ------------------------------------------------------------
+# Volumes (Persistent Data)
+# ------------------------------------------------------------
+volumes:
+  sqlserver_data:
+    driver: local
+  redis_data:
+    driver: local
