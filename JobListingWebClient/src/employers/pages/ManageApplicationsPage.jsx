@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchJobApplications, 
-  updateApplication 
+import {
+  fetchJobApplications,
+  updateApplication
 } from '../../redux/slices/applicationSlice';
-import { 
+import {
   fetchJobsbyId
 } from '../../redux/slices/jobSlice';
-import { 
-  FaEye, 
-  FaCheck, 
-  FaTimes, 
+import { createChatRoom } from '../../redux/slices/chatSlice';
+import {
+  FaEye,
+  FaCheck,
+  FaTimes,
   FaSort,
   FaEllipsisV,
-  FaFileAlt 
+  FaFileAlt,
+  FaComment
 } from 'react-icons/fa';
-import { Eye } from 'lucide-react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogTitle, 
+import { Eye, MessageSquare } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
   DialogActions,
   Snackbar,
   Alert as MuiAlert
@@ -40,6 +42,7 @@ const ManageApplicationsPage = () => {
   const [currentApplicationId, setCurrentApplicationId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [cvPreviewData, setCvPreviewData] = useState(null);
+  const [isCreatingChat, setIsCreatingChat] = useState(false);
 
   const { jobApplications, loading, error } = useSelector((state) => state.applications);
   const { jobbyId } = useSelector((state) => state.jobs);
@@ -88,6 +91,38 @@ const ManageApplicationsPage = () => {
 
   const handleCloseErrorMessage = () => {
     setErrorMessage('');
+  };
+
+  const handleStartChat = async (application) => {
+    if (!application?.user?.userId) {
+      setErrorMessage('Không thể tạo cuộc trò chuyện: thiếu thông tin người dùng');
+      return;
+    }
+
+    try {
+      setIsCreatingChat(true);
+      const result = await dispatch(createChatRoom(application.user.userId)).unwrap();
+
+      if (result && result.id) {
+        navigate('/employer/chat', {
+          state: {
+            selectedRoomId: result.id,
+            applicant: {
+              id: application.user.userId,
+              name: `${application.user.firstName} ${application.user.lastName}`,
+              email: application.user.email
+            }
+          }
+        });
+      } else {
+        throw new Error('Invalid chat room response');
+      }
+    } catch (error) {
+      console.error('Failed to create chat room:', error);
+      setErrorMessage('Không thể tạo cuộc trò chuyện. Vui lòng thử lại.');
+    } finally {
+      setIsCreatingChat(false);
+    }
   };
 
   const filteredAndSortedApplications = jobApplications
@@ -210,27 +245,35 @@ const ManageApplicationsPage = () => {
                       {currentApplicationId === application.applicationID && (
                         <div className="absolute right-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                           <div className="py-1">
-                            <button 
-                                onClick={() => handlePreviewCV(application.cvid)}
-                                className="block w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-gray-100"
-                              >
-                                <Eye className="mr-2 inline" /> Xem CV
-                              </button>
-                            <button 
+                            <button
+                              onClick={() => handlePreviewCV(application.cvid)}
+                              className="block w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-gray-100"
+                            >
+                              <Eye className="mr-2 inline" /> Xem CV
+                            </button>
+                            <button
                               onClick={() => handleViewApplicationDetails(application)}
                               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                             >
                               <FaEye className="mr-2 inline" /> Xem Chi Tiết
                             </button>
+                            <button
+                              onClick={() => handleStartChat(application)}
+                              disabled={isCreatingChat}
+                              className="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <MessageSquare className="mr-2 inline" />
+                              {isCreatingChat ? 'Đang tạo...' : 'Nhắn tin'}
+                            </button>
                             {application.status === 'Chờ duyệt' && (
                               <>
-                                <button 
+                                <button
                                   onClick={() => handleUpdateApplicationStatus(application, 'Đã duyệt')}
                                   className="block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-gray-100"
                                 >
                                   <FaCheck className="mr-2 inline text-green-500" /> Duyệt
                                 </button>
-                                <button 
+                                <button
                                   onClick={() => handleUpdateApplicationStatus(application, 'Từ chối')}
                                   className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100"
                                 >

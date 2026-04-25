@@ -106,5 +106,59 @@ namespace JobListingWebAPI.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<ChatRoom> ArchiveChatRoomAsync(string roomId, string userId)
+        {
+            var chatRoom = await _context.ChatRooms.FindAsync(roomId);
+            if (chatRoom == null)
+                throw new Exception("Chat room not found");
+
+            if (chatRoom.EmployerId != userId && chatRoom.ApplicantId != userId)
+                throw new Exception("Unauthorized");
+
+            chatRoom.IsActive = false;
+            await _context.SaveChangesAsync();
+
+            return chatRoom;
+        }
+
+        public async Task DeleteChatRoomAsync(string roomId, string userId)
+        {
+            var chatRoom = await _context.ChatRooms.FindAsync(roomId);
+            if (chatRoom == null)
+                throw new Exception("Chat room not found");
+
+            if (chatRoom.EmployerId != userId && chatRoom.ApplicantId != userId)
+                throw new Exception("Unauthorized");
+
+            // Delete all messages in the room
+            var messages = await _context.ChatMessages
+                .Where(m => m.ChatRoomId == roomId)
+                .ToListAsync();
+
+            _context.ChatMessages.RemoveRange(messages);
+            _context.ChatRooms.Remove(chatRoom);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteMessageAsync(string messageId, string userId)
+        {
+            var message = await _context.ChatMessages.FindAsync(messageId);
+            if (message == null)
+                throw new Exception("Message not found");
+
+            if (message.SenderId != userId)
+                throw new Exception("Unauthorized");
+
+            _context.ChatMessages.Remove(message);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChatFileAsync(ChatFile chatFile)
+        {
+            _context.ChatFiles.Add(chatFile);
+            await _context.SaveChangesAsync();
+        }
     }
 }

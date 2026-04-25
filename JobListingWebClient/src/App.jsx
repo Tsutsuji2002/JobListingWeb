@@ -94,7 +94,6 @@ const App = () => {
             <Route path="/employer" element={<EmployerIntroPage />} />
             <Route path="/employer/signup" element={<EmployerSignupPage />} />
             <Route path="/employer/login" element={<EmployerLoginPage />} />
-            <Route path="/employer/chat" element={<EmployerMessagePage />} />
 
             {/* Employer Protected Routes */}
             <Route path="/employer" element={<EmployerLayout />}>
@@ -108,6 +107,7 @@ const App = () => {
               <Route path="jobs/edit/:jobId" element={<EditJobPage />} />
               <Route path="company/create" element={<CompanyCreatePage />} />
               <Route path="jobs/manage-applications/:jobId" element={<ManageApplicationsPage />} />
+              <Route path="chat" element={<EmployerMessagePage />} />
             </Route>
 
             {/* Admin Routes */}

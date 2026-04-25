@@ -7,11 +7,11 @@ export const chatApi = {
       const response = await api.post('/chat/rooms', null, {
         params: { employerId }
       });
-      
+
       if (!response.data) {
         throw new Error('No data received from server');
       }
-      
+
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -42,12 +42,44 @@ export const chatApi = {
     type = 0;
     console.log("chatRoomId", chatRoomId);
     console.log("content", content);
-    
+
     const response = await api.post('/chat/messages', {
       chatRoomId,  // Directly passing the chatRoomId as a string
       content,     // Directly passing the content as a string
       type         // Passing the type as an integer (0 for Text by default)
-  });
+    });
+    return response.data;
+  },
+
+  // Archive a chat room
+  archiveChatRoom: async (roomId) => {
+    const response = await api.put(`/chat/rooms/${roomId}/archive`);
+    return response.data;
+  },
+
+  // Delete a chat room
+  deleteChatRoom: async (roomId) => {
+    const response = await api.delete(`/chat/rooms/${roomId}`);
+    return response.data;
+  },
+
+  // Delete a message
+  deleteMessage: async (messageId) => {
+    const response = await api.delete(`/chat/messages/${messageId}`);
+    return response.data;
+  },
+
+  // Upload a file
+  uploadFile: async (file, chatRoomId) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('chatRoomId', chatRoomId);
+
+    const response = await api.post('/chat/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return response.data;
   }
 };

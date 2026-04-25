@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
-using JobListingWebAPI.Models;
+using System.Net.Http;
 
 namespace JobListingWebAPI.Services
 {
@@ -8,31 +8,29 @@ namespace JobListingWebAPI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-        private const string BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
+        // Using stable model that works with most API keys
+        private const string MODEL_ID = "gemini-2.5-flash"; 
 
-        public GeminiChatbotService(IConfiguration configuration)
+        public GeminiChatbotService(HttpClient httpClient, IConfiguration configuration)
         {
-            _httpClient = new HttpClient();
-            _apiKey = configuration["GeminiApi:ApiKey"] ?? throw new ArgumentNullException("\"The Gemini API Key is not configured in appsettings.json or environment variables.\"");
-            _httpClient.BaseAddress = new Uri(BASE_URL);
+            _httpClient = httpClient;
+            _apiKey = configuration["GeminiApi:ApiKey"] ?? "";
         }
 
         public async Task<string> SendMessageAsync(string message)
         {
-            var requestUrl = $"{BASE_URL}?key={Uri.EscapeDataString(_apiKey)}";
-            Console.WriteLine($"{requestUrl}");
+            if (string.IsNullOrEmpty(_apiKey))
+                return "Lỗi: API Key chưa được cấu hình.";
+
+            // URL đúng định dạng cho Google AI SDK
+            var requestUrl = $"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={_apiKey}";
+
             var requestBody = new
             {
                 contents = new[]
                 {
-            new
-            {
-                parts = new[]
-                {
-                    new { text = message }
+                    new { parts = new[] { new { text = message } } }
                 }
-            }
-        }
             };
 
             try
@@ -43,20 +41,16 @@ namespace JobListingWebAPI.Services
                 var response = await _httpClient.PostAsync(requestUrl, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
-                // Detailed error logging
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"API Error Status: {response.StatusCode}");
-                    Console.WriteLine($"Response Content: {responseContent}");
-                    return $"API Error: {response.StatusCode}";
+                    return $"API Error: {response.StatusCode} - {responseContent}";
                 }
 
                 return responseContent;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception Details: {ex.Message}");
-                return $"Error: {ex.Message}";
+                return $"Exception: {ex.Message}";
             }
         }
     }

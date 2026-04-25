@@ -52,6 +52,42 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
+export const archiveChatRoom = createAsyncThunk(
+  'chat/archiveChatRoom',
+  async (roomId, { rejectWithValue }) => {
+    try {
+      await chatApi.archiveChatRoom(roomId);
+      return roomId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to archive chat room');
+    }
+  }
+);
+
+export const deleteChatRoom = createAsyncThunk(
+  'chat/deleteChatRoom',
+  async (roomId, { rejectWithValue }) => {
+    try {
+      await chatApi.deleteChatRoom(roomId);
+      return roomId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete chat room');
+    }
+  }
+);
+
+export const deleteMessage = createAsyncThunk(
+  'chat/deleteMessage',
+  async (messageId, { rejectWithValue }) => {
+    try {
+      await chatApi.deleteMessage(messageId);
+      return messageId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to delete message');
+    }
+  }
+);
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState: {
@@ -73,6 +109,31 @@ const chatSlice = createSlice({
     },
     updateLastFetch: (state, action) => {
       state.lastFetch = action.payload;
+    },
+    archiveRoom: (state, action) => {
+      state.rooms = state.rooms.filter(room => room.id !== action.payload);
+      if (state.selectedRoom?.id === action.payload) {
+        state.selectedRoom = null;
+        state.currentRoomMessages = [];
+      }
+    },
+    deleteRoom: (state, action) => {
+      state.rooms = state.rooms.filter(room => room.id !== action.payload);
+      if (state.selectedRoom?.id === action.payload) {
+        state.selectedRoom = null;
+        state.currentRoomMessages = [];
+      }
+    },
+    deleteMessage: (state, action) => {
+      state.currentRoomMessages = state.currentRoomMessages.filter(msg => msg.id !== action.payload);
+    },
+    updateReadStatus: (state, action) => {
+      const { roomId, readerId } = action.payload;
+      state.currentRoomMessages.forEach(msg => {
+        if (msg.senderId !== readerId) {
+          msg.isRead = true;
+        }
+      });
     }
   },
   extraReducers: (builder) => {
@@ -138,6 +199,56 @@ const chatSlice = createSlice({
       .addCase(sendMessage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // Archive Chat Room
+      .addCase(archiveChatRoom.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(archiveChatRoom.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rooms = state.rooms.filter(room => room.id !== action.payload);
+        if (state.selectedRoom?.id === action.payload) {
+          state.selectedRoom = null;
+          state.currentRoomMessages = [];
+        }
+      })
+      .addCase(archiveChatRoom.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Delete Chat Room
+      .addCase(deleteChatRoom.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteChatRoom.fulfilled, (state, action) => {
+        state.loading = false;
+        state.rooms = state.rooms.filter(room => room.id !== action.payload);
+        if (state.selectedRoom?.id === action.payload) {
+          state.selectedRoom = null;
+          state.currentRoomMessages = [];
+        }
+      })
+      .addCase(deleteChatRoom.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Delete Message
+      .addCase(deleteMessage.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMessage.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentRoomMessages = state.currentRoomMessages.filter(msg => msg.id !== action.payload);
+      })
+      .addCase(deleteMessage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   }
 });
@@ -145,7 +256,11 @@ const chatSlice = createSlice({
 export const {
   selectRoom,
   addNewMessage,
-  updateLastFetch
+  updateLastFetch,
+  archiveRoom,
+  deleteRoom,
+  deleteMessage,
+  updateReadStatus
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
