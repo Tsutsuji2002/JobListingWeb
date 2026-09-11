@@ -39,6 +39,7 @@ credentials/
 *.userosscache
 *.sln.docstates
 .idea/
+.kilo/
 
 # OS
 .DS_Store
